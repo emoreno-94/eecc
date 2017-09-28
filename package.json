@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "description": "Descarga el listado de especies en categoría de conservación de la página http://www.mma.gob.cl/clasificacionespecies/listado-especies-nativas-segun-estado-2014.htm y lo guarda en una base de datos",
   "main": "crawler.js",
-  "dependencies": {},
+  "dependencies": {
+    "bluebird-retry": "^0.11.0",
+    "cheerio": "^1.0.0-rc.2",
+    "fs-extra": "^4.0.2",
+    "request": "^2.82.0",
+    "request-promise": "^4.2.2",
+    "url-join": "^2.0.2",
+    "xlsx": "^0.11.4"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
