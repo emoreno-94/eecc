@@ -2,4 +2,4 @@
 node_modules
 
 # config file
-config/config.js
+config/local.js
