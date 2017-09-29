@@ -19,8 +19,6 @@ const getSpecies = (speciesSheet, row) => {
   Object.keys(formatExcel.speciesFormat).forEach(col => {
     species[formatExcel.speciesFormat[col].db.column] = speciesSheet[`${col}${row}`] ? speciesSheet[`${col}${row}`].v : '';
   });
-  species.scientist_name = species.scientist_name.toLowerCase();
-  species.family = species.family.toLowerCase();
   return species.scientist_name !== '' ? species : null;
 };
 
