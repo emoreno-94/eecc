@@ -1,13 +1,13 @@
 'use strict';
 
 const rp = require('request-promise');
+const fs = require('fs-extra');
 const cheerio = require('cheerio');
 const retry = require('bluebird-retry');
 const urlJoin = require('url-join');
 const xlsx = require('xlsx');
-// const rfr = require('rfr');
-// const parserSpeciesSheet = rfr('/parserSpeciesSheet');
-const parserSpeciesSheet = require('./parserSpeciesSheet');
+const rfr = require('rfr');
+const parserSpeciesSheet = rfr('/parserSpeciesSheet');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
 const URL_TO_PROCCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');

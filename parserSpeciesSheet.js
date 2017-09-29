@@ -1,8 +1,7 @@
 'use strict';
 
-// const rfr = require('rfr');
-// const formatExcel = rfr('/formatExcel');
-const formatExcel = require('./formatExcel');
+const rfr = require('rfr');
+const formatExcel = rfr('/formatExcel');
 
 const sameColumnsInFormat = (xlsx) => {
   return Object.keys(formatExcel)
