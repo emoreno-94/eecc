@@ -155,140 +155,140 @@ const regionsFormat = {
     xlsx: 'Arica y Parinacota',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'N': {
     xlsx: 'Tarapacá',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'O': {
     xlsx: 'Antofagasta',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'P': {
     xlsx: 'Atacama',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'Q': {
     xlsx: 'Coquimbo',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'R': {
     xlsx: 'Valparaíso continental',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'S': {
     xlsx: 'Metropolitana',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'T': {
     xlsx: 'O\'higgins',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'U': {
     xlsx: 'Maule',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'V': {
     xlsx: 'Bío-Bío',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'W': {
     xlsx: 'Araucanía',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'X': {
     xlsx: 'De Los Ríos',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'Y': {
     xlsx: 'De Los Lagos',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'Z': {
     xlsx: 'Aysén',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'AA': {
     xlsx: 'Magallanes continental e insular',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'AB': {
     xlsx: 'Antártica',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'AC': {
     xlsx: 'Isla Pascua',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'AD': {
     xlsx: 'Salas y Gómez',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'AE': {
     xlsx: 'Juan Fernandez',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
   'AF': {
     xlsx: 'Desventuradas',
     db: {
       table: 'regions',
-      column: 'real_name',
+      column: 'name',
     },
   },
 };
