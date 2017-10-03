@@ -1,7 +1,6 @@
 'use strict';
 
 const rp = require('request-promise');
-const fs = require('fs-extra');
 const cheerio = require('cheerio');
 const retry = require('bluebird-retry');
 const urlJoin = require('url-join');
