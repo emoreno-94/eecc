@@ -1,0 +1,47 @@
+{
+  "name": "eecc",
+  "version": "1.0.0",
+  "description": "Descarga el listado de especies en categoría de conservación de la página http://www.mma.gob.cl/clasificacionespecies/listado-especies-nativas-segun-estado-2014.htm y lo guarda en una base de datos",
+  "main": "crawler.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "check": "npx check-node-version --node `cat .nvmrc`",
+    "prestart": "npm run check",
+    "start": "node crawler",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:migrate:rollback": "knex migrate:rollback --cwd lib/db/",
+    "db:migrate:latest": "knex migrate:latest --cwd lib/db/",
+    "db:migrate:make": "knex migrate:make --cwd lib/db/",
+    "db:seed:make": "knex seed:make --cwd lib/db/",
+    "db:seed:run": "knex seed:run --cwd lib/db/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cswcl/eecc.git"
+  },
+  "author": "emoreno-94",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/cswcl/eecc/issues"
+  },
+  "homepage": "https://github.com/cswcl/eecc#readme",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "bluebird-retry": "^0.11.0",
+    "check-node-version": "^2.1.0",
+    "cheerio": "^1.0.0-rc.2",
+    "config": "^1.26.2",
+    "hasha": "^3.0.0",
+    "jsondiffpatch": "^0.2.4",
+    "knex": "^0.13.0",
+    "lodash.omit": "^4.5.0",
+    "pg": "^7.3.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "rfr": "^1.2.3",
+    "url-join": "^2.0.2",
+    "xlsx": "^0.11.5"
+  }
+}
