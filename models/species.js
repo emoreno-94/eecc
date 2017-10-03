@@ -5,10 +5,11 @@ const omit = require('lodash.omit');
 const jsondiffpatch = require('jsondiffpatch');
 const rfr = require('rfr');
 const knex = rfr('/lib/db/knex');
-const speciesTable = knex('species');
+const table = 'species';
 
 const getInstance = jsonSpecies => {
   const species = jsonSpecies;
+  species.process_number_rce = jsonSpecies.process_number_rce + '';
   species.scientist_name = species.scientist_name.toLowerCase();
   species.family = species.family.toLowerCase();
   species.hash = calculateHash(species);
@@ -16,11 +17,11 @@ const getInstance = jsonSpecies => {
   return species;
 };
 
-const findByHash = hash => speciesTable.select().where('hash', hash).first();
+const findByHash = hash => knex(table).select().where('hash', hash).first();
 
-const insert = species => speciesTable.insert(species).returning('hash');
+const insert = species => knex(table).insert(species).returning('hash');
 
-const update = species => speciesTable.where('hash', species.hash).update(species).returning('hash');
+const update = species => knex(table).where('hash', species.hash).update(species).returning('hash');
 
 const insertOrUpdate = species => {
   return findByHash(species.hash)
