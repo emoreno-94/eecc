@@ -10,6 +10,7 @@ const rfr = require('rfr');
 const parserSpeciesSheet = rfr('/parserSpeciesSheet');
 const speciesModel = rfr('/models/species');
 const validCategoryModel = rfr('/models/validCategory');
+const regionModel = rfr('/models/region');
 const bPromise = require('bluebird');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
@@ -58,6 +59,21 @@ const parseXlsx = () => {
     {concurrency: 1}
   );
 
+  const insertRegions = (regions, speciesHash) => bPromise.map(
+    regions,
+    (r) => regionModel.insert(regionModel.getInstance(r.name, r.val, speciesHash)),
+    {concurrency: 5}
+  );
+
+  const saveSpecies = speciesJson => {
+    const species = speciesModel.getInstance(speciesJson.species);
+    return speciesModel.insertOrUpdate(species)
+      .then(speciesHash => {
+        return insertCategories(speciesJson.categories, speciesHash[0])
+          .then(() => insertRegions(speciesJson.regions, speciesHash[0]));
+      })
+  };
+
   return getXlsx()
     .then(xlsxToParse => {
       const speciesSheetName = xlsxToParse.SheetNames[1];
@@ -65,19 +81,13 @@ const parseXlsx = () => {
       return parserSpeciesSheet(speciesSheet);
     })
     .then(allSpeciesJson => {
+      console.log('Updating species...');
       return validCategoryModel.removeAll()
-        .then(() => bPromise.map(
-          allSpeciesJson,
-          (speciesJson) => {
-            const species = speciesModel.getInstance(speciesJson.species);
-            return speciesModel.insertOrUpdate(species)
-              .then(speciesHash => {
-                return insertCategories(speciesJson.categories, speciesHash[0]);
-              })
-          },
-          {concurrency: 3}));
+        .then(() => regionModel.removeAll())
+        .then(() => bPromise.map(allSpeciesJson, saveSpecies, {concurrency: 3}));
     })
     .then(() => {
+      console.log('done!');
       process.exit(0);
     })
     .catch((err) => {
