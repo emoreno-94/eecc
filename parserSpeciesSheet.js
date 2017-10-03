@@ -23,16 +23,14 @@ const getSpecies = (speciesSheet, row) => {
 };
 
 const getRegions = (speciesSheet, row) => {
-  const regions = [];
-  Object.keys(formatExcel.regionsFormat).forEach(col => {
-    if (speciesSheet[`${col}${row}`].v !== 0) {
-      regions.push({
+  return Object.keys(formatExcel.regionsFormat)
+    .filter(col => speciesSheet[`${col}${row}`].v !== 0)
+    .map(col => {
+      return {
         name: formatExcel.regionsFormat[col].xlsx,
         val: speciesSheet[`${col}${row}`].v,
-      });
-    }
-  });
-  return regions;
+      }
+    });
 };
 
 const getValidCategories = (speciesSheet, row) => {
