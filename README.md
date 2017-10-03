@@ -7,3 +7,4 @@ Descarga el listado de especies en categoría de conservación de la pagina http
 1. Crear archivo `config/local.js` con base `confif/example.local.js`
 2. `npm install` # instalacion de dependencias
 3. `npm run db:migrate:latest` # migración inicial
+3. `npm run db:seed:run` # insertar datos iniciales
