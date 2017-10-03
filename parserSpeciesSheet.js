@@ -34,8 +34,9 @@ const getRegions = (speciesSheet, row) => {
 };
 
 const getValidCategories = (speciesSheet, row) => {
+  const regRemoveExtra = /\(.*?\)|{.*?}|\[.*?]/g;
   const cleanCategories = textCategories => {
-    let categories = textCategories.replace(/\(.*?\)|{.*?}|\[.*?]/g, '').split(/[,;\n-]/);
+    let categories = textCategories.replace(regRemoveExtra, '').split(/[,;\n-]/);
     categories = categories.map(c => c.trim());
     categories = categories.filter(c => c !== '');
     return categories
@@ -44,7 +45,6 @@ const getValidCategories = (speciesSheet, row) => {
   let categories = [];
   Object.keys(formatExcel.validCategoryFormat).forEach(col => {
     const textCategories = speciesSheet[`${col}${row}`].v;
-    textCategories.replace(/\(.*?\)|{.*?}|\[.*?]/g, '');
     categories = cleanCategories(textCategories);
   });
   return categories;
