@@ -8,6 +8,9 @@ const urlJoin = require('url-join');
 const xlsx = require('xlsx');
 const rfr = require('rfr');
 const parserSpeciesSheet = rfr('/parserSpeciesSheet');
+const speciesModel = rfr('/models/species');
+const validCategoryModel = rfr('/models/validCategory');
+const bPromise = require('bluebird');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
 const URL_TO_PROCCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
@@ -49,15 +52,38 @@ const getXlsx = () => {
 };
 
 const parseXlsx = () => {
+  const insertCategories = (categories, speciesHash) => bPromise.map(
+    categories,
+    (c) => validCategoryModel.tryToInsert(validCategoryModel.getInstance(c, speciesHash)),
+    {concurrency: 1}
+  );
+
   return getXlsx()
     .then(xlsxToParse => {
       const speciesSheetName = xlsxToParse.SheetNames[1];
       const speciesSheet = xlsxToParse.Sheets[speciesSheetName];
       return parserSpeciesSheet(speciesSheet);
     })
-    .then(speciesJson => {
-      console.log(JSON.stringify(speciesJson));
-    });
+    .then(allSpeciesJson => {
+      return validCategoryModel.removeAll()
+        .then(() => bPromise.map(
+          allSpeciesJson,
+          (speciesJson) => {
+            const species = speciesModel.getInstance(speciesJson.species);
+            return speciesModel.insertOrUpdate(species)
+              .then(speciesHash => {
+                return insertCategories(speciesJson.categories, speciesHash[0]);
+              })
+          },
+          {concurrency: 3}));
+    })
+    .then(() => {
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.log(err);
+      process.exit(1);
+    })
 };
 
-parseXlsx();
+return parseXlsx();
