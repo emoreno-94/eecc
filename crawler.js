@@ -83,10 +83,11 @@ const parseXlsx = () => {
       console.log('Updating species...');
       return validCategoryModel.removeAll()
         .then(() => regionModel.removeAll())
+        .then(() => speciesModel.setAllStates('not-found'))
         .then(() => bPromise.map(allSpeciesJson, saveSpecies, {concurrency: 3}));
     })
     .then(() => {
-      console.log('done!');
+      console.log('Done!');
       process.exit(0);
     })
     .catch((err) => {
