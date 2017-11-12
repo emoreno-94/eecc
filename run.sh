@@ -9,4 +9,4 @@ curdir=`dirname "$0"`
 
 cd $curdir
 
-node crawler >> "eecc.log" 2>&1
+node crawler > "eecc.log" 2>&1
