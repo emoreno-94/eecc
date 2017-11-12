@@ -73,6 +73,7 @@ const parseXlsx = () => {
       })
   };
 
+  console.log(`\n${new Date().toISOString()}: Starting eecc crawler`);
   return getXlsx()
     .then(xlsxToParse => {
       const speciesSheetName = xlsxToParse.SheetNames[1];
@@ -87,7 +88,7 @@ const parseXlsx = () => {
         .then(() => bPromise.map(allSpeciesJson, saveSpecies, {concurrency: 3}));
     })
     .then(() => {
-      console.log('Done!');
+      console.log(`${new Date().toISOString()}: Done!`);
       process.exit(0);
     })
     .catch((err) => {
