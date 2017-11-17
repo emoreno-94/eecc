@@ -14,6 +14,7 @@ const getInstance = jsonSpecies => {
   species.family = species.family.toLowerCase();
   species.hash = calculateHash(species);
   species.collector_hash = calculateCollectorHash(species);
+  Object.keys(species).forEach(key => species[key] = species[key].trim());
   return species;
 };
 
@@ -23,14 +24,25 @@ const insert = species => knex(table).insert(species).returning('hash');
 
 const update = species => knex(table).where('hash', species.hash).update(species).returning('hash');
 
+const setAllStates = () => knex(table).update('state', 'not-found');
+
 const insertOrUpdate = species => {
   return findByHash(species.hash)
     .then(dbSpecies => {
       if (dbSpecies) {
+        species.state = 'found';
+        species.last_date_found = new Date().toISOString();
         // subir la version si hay cambios
-        if (jsondiffpatch.diff(omit(dbSpecies, ['version', 'updated_at', 'created_at']), species)) {
+        const diff = jsondiffpatch.diff(
+          omit(dbSpecies, ['version', 'updated_at', 'created_at', 'state', 'last_diff', 'last_date_found']),
+          omit(species, ['state', 'last_date_found']));
+        if (diff) {
+          species.state = 'changed';
           species.version = dbSpecies.version + 1;
+          species.last_diff = diff;
         }
+        // no actualizar el hash del colector pues podría ser cambiado por eventual linkeo posterior
+        delete species.collector_hash;
         return update(species);
       } else {
         return insert(species);
@@ -51,4 +63,5 @@ module.exports = {
   insert,
   update,
   insertOrUpdate,
+  setAllStates,
 };
