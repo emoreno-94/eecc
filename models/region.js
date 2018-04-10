@@ -34,7 +34,7 @@ const getInstance = (regionName, value, speciesHash) => {
     region_id: regionsId[regionName],
     species_hash: speciesHash,
     value: value,
-  }
+  };
 };
 
 const find = (id, hash) => knex(table).select().where({'region_id': id, 'species_hash': hash}).first();

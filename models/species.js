@@ -9,7 +9,7 @@ const table = 'species';
 
 const getInstance = jsonSpecies => {
   const species = jsonSpecies;
-  species.process_number_rce = jsonSpecies.process_number_rce + '';
+  species.process_number_rce = String(jsonSpecies.process_number_rce);
   species.scientist_name = species.scientist_name.toLowerCase();
   species.family = species.family.toLowerCase();
   species.hash = calculateHash(species);
@@ -47,7 +47,7 @@ const insertOrUpdate = species => {
       } else {
         return insert(species);
       }
-    })
+    });
 };
 
 const calculateHash = (species) => hasha([species.scientist_name, species.family].join('&'));
