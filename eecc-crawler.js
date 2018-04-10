@@ -42,7 +42,7 @@ const getPageToProcessWithRetry = (url, options = {load: true}) => {
 const getSpeciesXlsxUrl = () => {
   const urlSelector = 'div#container > ul > li:nth-child(2) > a';
   return getPageToProcessWithRetry(URL_TO_PROCCESS)
-    .then($ => urlJoin(MAIN_URL, $(urlSelector).attr('href')))
+    .then($ => urlJoin(MAIN_URL, $(urlSelector).attr('href')));
 };
 
 const getXlsx = () => {
@@ -70,7 +70,7 @@ const parseXlsx = () => {
       .then(speciesHash => {
         return insertCategories(speciesJson.categories, speciesHash[0])
           .then(() => insertRegions(speciesJson.regions, speciesHash[0]));
-      })
+      });
   };
 
   console.log(`${new Date().toISOString()}: Starting eecc crawler`);
@@ -94,7 +94,7 @@ const parseXlsx = () => {
     .catch((err) => {
       console.log(err);
       process.exit(1);
-    })
+    });
 };
 
 return parseXlsx();

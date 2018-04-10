@@ -4,15 +4,18 @@ const hasha = require('hasha');
 const omit = require('lodash.omit');
 const jsondiffpatch = require('jsondiffpatch');
 const rfr = require('rfr');
-const knex = rfr('/lib/db/knex');
 const table = 'species';
+
+const knex = rfr('/lib/db/knex');
+const fixKnownBadNames = rfr('/lib/fixKnownBadNames');
+
 
 const getInstance = jsonSpecies => {
   const species = jsonSpecies;
-  species.process_number_rce = jsonSpecies.process_number_rce + '';
-  species.scientist_name = species.scientist_name.toLowerCase();
+  species.process_number_rce = String(jsonSpecies.process_number_rce);
+  species.scientist_name = fixKnownBadNames(species.scientist_name.toLowerCase());
   species.family = species.family.toLowerCase();
-  species.hash = calculateHash(species);
+  species.hash = calculateHash(species.scientist_name, species.family);
   species.collector_hash = calculateCollectorHash(species);
   Object.keys(species).forEach(key => species[key] = species[key].trim());
   return species;
@@ -47,10 +50,10 @@ const insertOrUpdate = species => {
       } else {
         return insert(species);
       }
-    })
+    });
 };
 
-const calculateHash = (species) => hasha([species.scientist_name, species.family].join('&'));
+const calculateHash = (scientist_name, family) => hasha([scientist_name, family].join('&'));
 
 const calculateCollectorHash = (species) => {
   const speciesSep = species.scientist_name.split(' ');

@@ -11,7 +11,7 @@ const sameColumnsInFormat = (xlsx) => {
           const cleanXlsxHeader = xlsx[`${colLetter}1`].v.replace(/\s+/g, ' ').trim();
           const cleanFormat = formatExcel[formatModel][colLetter].xlsx.replace(/\s+/g, ' ').trim();
           return cleanFormat === cleanXlsxHeader;
-        }))
+        }));
 };
 
 const getSpecies = (speciesSheet, row) => {
@@ -29,7 +29,7 @@ const getRegions = (speciesSheet, row) => {
       return {
         name: formatExcel.regionsFormat[col].xlsx,
         val: speciesSheet[`${col}${row}`].v,
-      }
+      };
     });
 };
 
@@ -39,7 +39,7 @@ const getValidCategories = (speciesSheet, row) => {
     let categories = textCategories.replace(regRemoveExtra, '').split(/[,;\n-]/);
     categories = categories.map(c => c.trim());
     categories = categories.filter(c => c !== '');
-    return categories
+    return categories;
   };
 
   let categories = [];

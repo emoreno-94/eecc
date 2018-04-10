@@ -25,7 +25,7 @@ const getInstance = (shortName, hash) => {
   return {
     valid_category_id: categoriesId[shortName],
     species_hash: hash,
-  }
+  };
 };
 
 const find = (id, hash) => knex(table).select().where({'valid_category_id': id, 'species_hash': hash}).first();
@@ -38,10 +38,10 @@ const tryToInsert = validCategory => {
       if (!dbSpecies) {
         return insert(validCategory);
       }
-    })
+    });
 };
 
-const removeAll = speciesHash => knex(table).del();
+const removeAll = () => knex(table).del();
 
 module.exports = {
   getInstance,
