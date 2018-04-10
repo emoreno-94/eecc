@@ -73,6 +73,7 @@ const parseXlsx = () => {
       })
   };
 
+  console.log(`${new Date().toISOString()}: Starting eecc crawler`);
   return getXlsx()
     .then(xlsxToParse => {
       const speciesSheetName = xlsxToParse.SheetNames[1];
@@ -83,10 +84,11 @@ const parseXlsx = () => {
       console.log('Updating species...');
       return validCategoryModel.removeAll()
         .then(() => regionModel.removeAll())
+        .then(() => speciesModel.setAllStates('not-found'))
         .then(() => bPromise.map(allSpeciesJson, saveSpecies, {concurrency: 3}));
     })
     .then(() => {
-      console.log('done!');
+      console.log(`${new Date().toISOString()}: Done!`);
       process.exit(0);
     })
     .catch((err) => {
