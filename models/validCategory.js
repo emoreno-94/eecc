@@ -28,7 +28,7 @@ const getInstance = (shortName, hash) => {
   };
 };
 
-const find = (id, hash) => knex(table).select().where({'valid_category_id': id, 'species_hash': hash}).first();
+const find = (id, hash) => knex(table).select().where({ 'valid_category_id': id, 'species_hash': hash }).first();
 
 const insert = validCategory => knex(table).insert(validCategory).returning('id');
 

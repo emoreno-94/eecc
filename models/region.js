@@ -37,7 +37,7 @@ const getInstance = (regionName, value, speciesHash) => {
   };
 };
 
-const find = (id, hash) => knex(table).select().where({'region_id': id, 'species_hash': hash}).first();
+const find = (id, hash) => knex(table).select().where({ 'region_id': id, 'species_hash': hash }).first();
 
 const insert = validCategory => knex(table).insert(validCategory).returning('id');
 

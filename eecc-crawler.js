@@ -16,7 +16,7 @@ const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
 const URL_TO_PROCCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
 
 
-const getPageToProcess = (url, options = {load: true}) => {
+const getPageToProcess = (url, options = { load: true }) => {
   let RequestOptions = {
     uri: url,
     timeout: 5000,
@@ -27,14 +27,14 @@ const getPageToProcess = (url, options = {load: true}) => {
     },
   };
 
-  console.log(`Processing page: ${url}`);
+  console.log(`Processing page: ${ url }`);
   return rp(RequestOptions);
 };
 
-const getPageToProcessWithRetry = (url, options = {load: true}) => {
-  return retry(() => getPageToProcess(url, options), {max_tries: 1})
+const getPageToProcessWithRetry = (url, options = { load: true }) => {
+  return retry(() => getPageToProcess(url, options), { max_tries: 1 })
     .catch(err => {
-      console.error(`Fail to process url: ${url}`);
+      console.error(`Fail to process url: ${ url }`);
       return Promise.reject(err);
     });
 };
@@ -47,7 +47,7 @@ const getSpeciesXlsxUrl = () => {
 
 const getXlsx = () => {
   return getSpeciesXlsxUrl()
-    .then(url => getPageToProcessWithRetry(url, {load: false}))
+    .then(url => getPageToProcessWithRetry(url, { load: false }))
     .then(xlsxSpecies => xlsx.read(xlsxSpecies));
 };
 
@@ -55,13 +55,13 @@ const parseXlsx = () => {
   const insertCategories = (categories, speciesHash) => bPromise.map(
     categories,
     (c) => validCategoryModel.tryToInsert(validCategoryModel.getInstance(c, speciesHash)),
-    {concurrency: 1}
+    { concurrency: 1 }
   );
 
   const insertRegions = (regions, speciesHash) => bPromise.map(
     regions,
     (r) => regionModel.insert(regionModel.getInstance(r.name, r.val, speciesHash)),
-    {concurrency: 5}
+    { concurrency: 5 }
   );
 
   const saveSpecies = speciesJson => {
@@ -73,7 +73,7 @@ const parseXlsx = () => {
       });
   };
 
-  console.log(`${new Date().toISOString()}: Starting eecc crawler`);
+  console.log(`${ new Date().toISOString()}: Starting eecc crawler`);
   return getXlsx()
     .then(xlsxToParse => {
       const speciesSheetName = xlsxToParse.SheetNames[1];
@@ -85,10 +85,10 @@ const parseXlsx = () => {
       return validCategoryModel.removeAll()
         .then(() => regionModel.removeAll())
         .then(() => speciesModel.setAllStates('not-found'))
-        .then(() => bPromise.map(allSpeciesJson, saveSpecies, {concurrency: 3}));
+        .then(() => bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 }));
     })
     .then(() => {
-      console.log(`${new Date().toISOString()}: Done!`);
+      console.log(`${ new Date().toISOString()}: Done!`);
       process.exit(0);
     })
     .catch((err) => {

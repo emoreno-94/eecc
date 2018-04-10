@@ -17,7 +17,7 @@ const getInstance = jsonSpecies => {
   species.family = species.family.toLowerCase();
   species.hash = calculateHash(species.scientist_name, species.family);
   species.collector_hash = calculateCollectorHash(species);
-  Object.keys(species).forEach(key => species[key] = species[key].trim());
+  Object.keys(species).forEach(key => species[ key] = species[ key].trim());
   return species;
 };
 
@@ -37,8 +37,8 @@ const insertOrUpdate = species => {
         species.last_date_found = new Date().toISOString();
         // subir la version si hay cambios
         const diff = jsondiffpatch.diff(
-          omit(dbSpecies, ['version', 'updated_at', 'created_at', 'state', 'last_diff', 'last_date_found']),
-          omit(species, ['state', 'last_date_found']));
+          omit(dbSpecies, [ 'version', 'updated_at', 'created_at', 'state', 'last_diff', 'last_date_found' ]),
+          omit(species, [ 'state', 'last_date_found' ]));
         if (diff) {
           species.state = 'changed';
           species.version = dbSpecies.version + 1;
@@ -53,11 +53,11 @@ const insertOrUpdate = species => {
     });
 };
 
-const calculateHash = (scientist_name, family) => hasha([scientist_name, family].join('&'));
+const calculateHash = (scientist_name, family) => hasha([ scientist_name, family ].join('&'));
 
 const calculateCollectorHash = (species) => {
   const speciesSep = species.scientist_name.split(' ');
-  return hasha([speciesSep[0], speciesSep[1], '', '', species.family, 'darwinion'].join('&'));
+  return hasha([ speciesSep[ 0 ], speciesSep[ 1 ], '', '', species.family, 'darwinion' ].join('&'));
 };
 
 module.exports = {
