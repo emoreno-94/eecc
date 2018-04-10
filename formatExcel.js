@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint max-len: ["error", { "ignoreStrings": true }] */
+
 const speciesFormat = {
   'B': {
     xlsx: 'NOMBRE CIENTÍFICO',
