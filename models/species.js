@@ -4,13 +4,16 @@ const hasha = require('hasha');
 const omit = require('lodash.omit');
 const jsondiffpatch = require('jsondiffpatch');
 const rfr = require('rfr');
-const knex = rfr('/lib/db/knex');
 const table = 'species';
+
+const knex = rfr('/lib/db/knex');
+const fixKnownBadNames = rfr('/lib/fixKnownBadNames');
+
 
 const getInstance = jsonSpecies => {
   const species = jsonSpecies;
   species.process_number_rce = String(jsonSpecies.process_number_rce);
-  species.scientist_name = species.scientist_name.toLowerCase();
+  species.scientist_name = fixKnownBadNames(species.scientist_name.toLowerCase());
   species.family = species.family.toLowerCase();
   species.hash = calculateHash(species.scientist_name, species.family);
   species.collector_hash = calculateCollectorHash(species);
