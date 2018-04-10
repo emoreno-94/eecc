@@ -8,6 +8,7 @@
   },
   "scripts": {
     "check": "npx check-node-version --node `cat .nvmrc`",
+    "lintJs": "npx eslint --ignore-path .gitignore .",
     "prestart": "npm run check",
     "start": "node eecc-crawler",
     "test": "echo \"Error: no test specified\" && exit 1",
