@@ -11,6 +11,7 @@ const speciesModel = rfr('/models/species');
 const validCategoryModel = rfr('/models/validCategory');
 const regionModel = rfr('/models/region');
 const bPromise = require('bluebird');
+const fixKnownNames = rfr('/lib/fixKnownNames');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
 const URL_TO_PROCCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
@@ -66,11 +67,13 @@ const parseXlsx = () => {
 
   const saveSpecies = speciesJson => {
     const species = speciesModel.getInstance(speciesJson.species);
-    return speciesModel.insertOrUpdate(species)
-      .then(speciesHash => {
-        return insertCategories(speciesJson.categories, speciesHash[0])
-          .then(() => insertRegions(speciesJson.regions, speciesHash[0]));
-      });
+    if (!fixKnownNames.mustBeRemoved(species.scientist_name)) {
+      return speciesModel.insertOrUpdate(species)
+        .then(speciesHash => {
+          return insertCategories(speciesJson.categories, speciesHash[0])
+            .then(() => insertRegions(speciesJson.regions, speciesHash[0]));
+        });
+    }
   };
 
   console.log(`${ new Date().toISOString()}: Starting eecc crawler`);
