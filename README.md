@@ -2,6 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/cswcl/eecc.svg?style=svg)](https://circleci.com/gh/cswcl/eecc)
 
+[![DeepScan grade](https://deepscan.io/api/projects/2448/branches/15546/badge/grade.svg)](https://deepscan.io/dashboard#view=project&pid=2448&bid=15546)
+
 Descarga el listado de especies en categoría de conservación de la pagina
 http://www.mma.gob.cl/clasificacionespecies/listado-especies-nativas-segun-estado-2014.htm
 y lo guarda en una base de datos
