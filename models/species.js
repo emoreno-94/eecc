@@ -10,10 +10,16 @@ const knex = rfr('/lib/db/knex');
 const fixKnownNames = rfr('/lib/fixKnownNames');
 
 
+const speciesNameFixers = [
+  fixKnownNames.fixKnownBadNames,
+  fixKnownNames.removeVariety,
+  fixKnownNames.removeParenthesis,
+];
+
 const getInstance = jsonSpecies => {
   const species = jsonSpecies;
   species.process_number_rce = String(jsonSpecies.process_number_rce);
-  species.scientist_name = fixKnownNames.fixKnownBadNames(species.scientist_name.toLowerCase());
+  species.scientist_name = speciesNameFixers.reduce((result, f) => result = f(result), species.scientist_name.toLowerCase());
   species.family = species.family.toLowerCase();
   species.hash = calculateHash(species.scientist_name, species.family);
   species.collector_hash = calculateCollectorHash(species);
