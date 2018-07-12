@@ -23,7 +23,9 @@ const getInstance = jsonSpecies => {
   species.family = species.family.toLowerCase();
   species.hash = calculateHash(species.scientist_name, species.family);
   species.collector_hash = calculateCollectorHash(species);
-  Object.keys(species).forEach(key => species[ key] = species[ key].trim());
+  Object.keys(species).forEach(key => species[key] = species[key].trim());
+  // fix middle newlines in valid_category_text
+  species.valid_category_text = fix.validCategoryText(species.valid_category_text);
   return species;
 };
 
