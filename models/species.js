@@ -7,13 +7,13 @@ const rfr = require('rfr');
 const table = 'species';
 
 const knex = rfr('/lib/db/knex');
-const fixKnownNames = rfr('/lib/fixKnownNames');
+const fix = rfr('/lib/fix');
 
 
 const speciesNameFixers = [
-  fixKnownNames.fixKnownBadNames,
-  fixKnownNames.removeVariety,
-  fixKnownNames.removeParenthesis,
+  fix.badNames,
+  fix.removeVariety,
+  fix.removeParenthesis,
 ];
 
 const getInstance = jsonSpecies => {
