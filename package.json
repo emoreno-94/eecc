@@ -29,20 +29,20 @@
   },
   "homepage": "https://github.com/cswcl/eecc#readme",
   "dependencies": {
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.5.3",
     "bluebird-retry": "^0.11.0",
-    "check-node-version": "^2.1.0",
+    "check-node-version": "^3.2.0",
     "cheerio": "^1.0.0-rc.2",
-    "config": "^1.30.0",
+    "config": "^3.0.1",
     "hasha": "^3.0.0",
-    "jsondiffpatch": "^0.2.4",
-    "knex": "^0.15.0",
+    "jsondiffpatch": "^0.3.11",
+    "knex": "^0.16.3",
     "lodash.omit": "^4.5.0",
-    "pg": "^7.4.3",
-    "request": "^2.87.0",
-    "request-promise": "^4.2.2",
+    "pg": "^7.8.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "rfr": "^1.2.3",
     "url-join": "git+https://github.com/fernandocanizo/url-join.git",
-    "xlsx": "^0.11.5"
+    "xlsx": "^0.14.1"
   }
 }
