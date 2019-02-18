@@ -10,7 +10,13 @@ const sameColumnsInFormat = (xlsx) => {
         .every(colLetter => {
           const cleanXlsxHeader = xlsx[`${colLetter}1`].v.replace(/\s+/g, ' ').trim();
           const cleanFormat = formatExcel[formatModel][colLetter].xlsx.replace(/\s+/g, ' ').trim();
-          return cleanFormat === cleanXlsxHeader;
+          if (cleanFormat !== cleanXlsxHeader && cleanXlsxHeader.includes(cleanFormat.substr(0, 8))) {
+            console.log('WARNING: Columnas difieren en nombres, pero parten similar');
+            console.log('-> ', cleanFormat);
+            console.log('-> ', cleanXlsxHeader);
+            console.log('-----------------');
+          }
+          return cleanXlsxHeader.includes(cleanFormat.substr(0, 8));
         }));
 };
 
@@ -66,7 +72,7 @@ const parseInfo = speciesSheet => {
 
 const parseXlsx = (speciesSheet) => {
   if (sameColumnsInFormat(speciesSheet)) {
-    return parseInfo(speciesSheet);
+   return parseInfo(speciesSheet);
   } else {
     console.error('Excel have a change in headers!!!');
   }
