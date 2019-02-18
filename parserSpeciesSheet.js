@@ -31,12 +31,7 @@ const getSpecies = (speciesSheet, row) => {
 const getRegions = (speciesSheet, row) => {
   return Object.keys(formatExcel.regionsFormat)
     .filter(col => speciesSheet[`${col}${row}`].v !== 0)
-    .map(col => {
-      return {
-        name: formatExcel.regionsFormat[col].xlsx,
-        val: speciesSheet[`${col}${row}`].v,
-      };
-    });
+    .map(col => ({ name: formatExcel.regionsFormat[col].xlsx, val: speciesSheet[`${col}${row}`].v }));
 };
 
 const getValidCategories = (speciesSheet, row) => {
