@@ -52,7 +52,7 @@ const getValidCategories = (speciesSheet, row) => {
 
 
 const parseInfo = speciesSheet => {
-  const rows = parseInt(speciesSheet['!ref'].replace(/.*?(\d+)$/, '$1'), 10);
+  const rows = speciesSheet['!rows'].length;
   const species = [];
   for (let row = 2; row <= rows; row++) {
     species.push({
