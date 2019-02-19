@@ -34,7 +34,7 @@ const find = (id, hash) => knex(table).select().where({ 'valid_category_id': id,
 const insert = validCategory => knex(table).insert(validCategory).returning('id');
 
 const tryToInsert = validCategory => {
-  validCategory.valid_category_id = validCategory.valid_category_id || 13; // clasificar como otro por defecto
+  validCategory.valid_category_id = validCategory.valid_category_id || categoriesId.otro; // clasificar como otro por defecto
   return find(validCategory.valid_category_id, validCategory.species_hash)
     .then(dbSpecies => {
       if (!dbSpecies) {
