@@ -67,7 +67,7 @@ const parseInfo = speciesSheet => {
 
 const parseXlsx = (speciesSheet) => {
   if (sameColumnsInFormat(speciesSheet)) {
-   return parseInfo(speciesSheet);
+    return parseInfo(speciesSheet);
   } else {
     console.error('Excel have a change in headers!!!');
   }
