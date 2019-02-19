@@ -18,6 +18,7 @@ const categoriesId = {
   R: 10,
   VU: 11,
   'Taxón no presente en Chile': 12,
+  otro: 13,
 };
 
 
@@ -33,6 +34,7 @@ const find = (id, hash) => knex(table).select().where({ 'valid_category_id': id,
 const insert = validCategory => knex(table).insert(validCategory).returning('id');
 
 const tryToInsert = validCategory => {
+  validCategory.valid_category_id = validCategory.valid_category_id || categoriesId.otro; // clasificar como otro por defecto
   return find(validCategory.valid_category_id, validCategory.species_hash)
     .then(dbSpecies => {
       if (!dbSpecies) {
