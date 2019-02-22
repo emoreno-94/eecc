@@ -12,7 +12,7 @@ const validCategoryModel = rfr('/models/validCategory');
 const regionModel = rfr('/models/region');
 const bPromise = require('bluebird');
 const fix = rfr('/lib/fix');
-const corrections = rfr('/lib/corrections');
+const cswCorrections = rfr('/lib/csw-corrections');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
 const URL_TO_PROCCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
@@ -92,7 +92,7 @@ const parseXlsx = () => {
         .then(() => bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 }));
     })
     .then(() => {
-      return corrections.runCorrections();
+      return cswCorrections.runCorrections();
     })
     .then(() => {
       console.log(`${ new Date().toISOString()}: Done!`);
