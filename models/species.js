@@ -20,10 +20,10 @@ const getInstance = jsonSpecies => {
   const species = jsonSpecies;
   species.process_number_rce = String(jsonSpecies.process_number_rce);
   species.scientist_name = speciesNameFixers.reduce((result, f) => result = f(result), species.scientist_name.toLowerCase().trim());
-  species.family = species.family.toLowerCase().trim();
+  species.family = (species.family || '').toLowerCase().trim();
   species.hash = calculateHash(species.scientist_name, species.family);
   species.collector_hash = calculateCollectorHash(species);
-  Object.keys(species).forEach(key => species[key] = species[key].trim());
+  Object.keys(species).forEach(key => species[key] = (species[key] || '').trim());
   // fix middle newlines in valid_category_text
   species.valid_category_text = fix.validCategoryText(species.valid_category_text);
   return species;
