@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/cswcl/eecc#readme",
   "dependencies": {
-    "bluebird": "^3.5.3",
     "cheerio": "^1.0.0-rc.3",
     "config": "^3.0.1",
     "got": "^11.5.1",

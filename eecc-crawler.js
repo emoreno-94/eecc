@@ -7,13 +7,18 @@ const parserSpeciesSheet = rfr('/parserSpeciesSheet');
 const speciesModel = rfr('/models/species');
 const validCategoryModel = rfr('/models/validCategory');
 const regionModel = rfr('/models/region');
-const bPromise = require('bluebird');
 const fix = rfr('/lib/fix');
 const cswCorrections = rfr('/lib/csw-corrections');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
 const URL_TO_PROCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
 
+
+const asyncForEach = async (list, fn) => {
+  for await (const e of list) {
+    await fn(e);
+  }
+};
 
 const getSpeciesXlsxUrl = async () => {
   const urlSelector = 'div#container > ul > li:nth-child(2) > a';
@@ -30,17 +35,11 @@ const getXlsx = async () => {
 };
 
 const parseXlsx = async () => {
-  const insertCategories = (categories, speciesHash) => bPromise.map(
-    categories,
-    c => validCategoryModel.tryToInsert(validCategoryModel.getInstance({ shortName: c, speciesHash })),
-    { concurrency: 1 },
-  );
+  const insertCategories = (categories, speciesHash) =>
+    asyncForEach(categories, c => validCategoryModel.tryToInsert(validCategoryModel.getInstance({ shortName: c, speciesHash })));
 
-  const insertRegions = (regions, speciesHash) => bPromise.map(
-    regions,
-    r => regionModel.insert(regionModel.getInstance({ regionName: r.name, value: r.val, speciesHash })),
-    { concurrency: 5 },
-  );
+  const insertRegions = (regions, speciesHash) =>
+    asyncForEach(regions, r => regionModel.insert(regionModel.getInstance({ regionName: r.name, value: r.val, speciesHash })));
 
   const saveSpecies = async speciesJson => {
     const species = speciesModel.getInstance(speciesJson.species);
@@ -61,7 +60,9 @@ const parseXlsx = async () => {
   await validCategoryModel.removeAll();
   await regionModel.removeAll();
   await speciesModel.update({ to: { state: 'lost' } });
-  await bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 });
+  for await (const species of allSpeciesJson) {
+    await saveSpecies(species);
+  }
 
   await cswCorrections.runCorrections();
 
