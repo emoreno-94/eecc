@@ -5,7 +5,7 @@ const speciesFormat = {
     xlsx: 'NOMBRE CIENTÍFICO',
     db: {
       table: 'species',
-      column: 'scientist_name',
+      column: 'scientific_name',
     },
   },
   'C': {

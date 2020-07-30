@@ -14,12 +14,12 @@ const speciesNameFixers = [
   fix.removeParenthesis,
 ];
 
-const _calculateHash = species => hasha([ species.scientist_name, species.family ].join('&'));
+const _calculateHash = species => hasha([ species.scientific_name, species.family ].join('&'));
 
 const getInstance = jsonSpecies => {
   const species = jsonSpecies;
   species.process_number_rce = String(jsonSpecies.process_number_rce);
-  species.scientist_name = speciesNameFixers.reduce((result, f) => result = f(result), species.scientist_name.toLowerCase().trim());
+  species.scientific_name = speciesNameFixers.reduce((result, f) => result = f(result), species.scientific_name.toLowerCase().trim());
   species.family = (species.family || '').toLowerCase().trim();
   species.hash = _calculateHash(species);
   species.collector_hash = calculateCollectorHash(species);
@@ -61,7 +61,7 @@ const upsert = async (species, { transaction } = {}) => {
 
 // TODO: esto probablemente pueda dejar de existir luego de mudar los datos del colector viejo a nviro
 const calculateCollectorHash = species => {
-  const speciesSep = species.scientist_name.split(' ');
+  const speciesSep = species.scientific_name.split(' ');
   return hasha([ speciesSep[0], speciesSep[1], '', '', species.family, 'darwinion' ].join('&'));
 };
 

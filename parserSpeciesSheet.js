@@ -23,7 +23,7 @@ const getSpecies = (speciesSheet, row) => {
   Object.keys(formatExcel.speciesFormat).forEach(col => {
     species[formatExcel.speciesFormat[col].db.column] = speciesSheet[`${col}${row}`] ? speciesSheet[`${col}${row}`].v : '';
   });
-  return species.scientist_name !== '' ? species : null;
+  return species.scientific_name !== '' ? species : null;
 };
 
 const getRegions = (speciesSheet, row) => {

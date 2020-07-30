@@ -43,7 +43,7 @@ const parseXlsx = async () => {
 
   const saveSpecies = async speciesJson => {
     const species = speciesModel.getInstance(speciesJson.species);
-    if (! fix.mustBeRemoved(species.scientist_name)) {
+    if (! fix.mustBeRemoved(species.scientific_name)) {
       const [ speciesHash ] = await speciesModel.upsert(species);
       await insertCategories(speciesJson.categories, speciesHash);
       await insertRegions(speciesJson.regions, speciesHash);
