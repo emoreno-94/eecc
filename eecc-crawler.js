@@ -54,13 +54,13 @@ const getXlsx = () => {
 const parseXlsx = () => {
   const insertCategories = (categories, speciesHash) => bPromise.map(
     categories,
-    (c) => validCategoryModel.tryToInsert(validCategoryModel.getInstance(c, speciesHash)),
+    c => validCategoryModel.tryToInsert(validCategoryModel.getInstance({ shortName: c, speciesHash })),
     { concurrency: 1 },
   );
 
   const insertRegions = (regions, speciesHash) => bPromise.map(
     regions,
-    (r) => regionModel.insert(regionModel.getInstance(r.name, r.val, speciesHash)),
+    r => regionModel.insert(regionModel.getInstance({ regionName: r.name, value: r.val, speciesHash })),
     { concurrency: 5 },
   );
 

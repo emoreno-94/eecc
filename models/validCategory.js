@@ -1,7 +1,10 @@
 // maneja las inserciones a la tabla species_valid_category
 const rfr = require('rfr');
 const knex = rfr('/lib/db/knex');
-const table = 'species_valid_category';
+const atie = rfr('/lib/db/addTransactionIfExists');
+
+
+const tableName = 'species_valid_category';
 
 const categoriesId = {
   CR: 1,
@@ -19,33 +22,28 @@ const categoriesId = {
   otro: 13,
 };
 
+const getInstance = ({ shortName, speciesHash }) => ({ valid_category_id: categoriesId[shortName], species_hash: speciesHash });
 
-const getInstance = (shortName, hash) => {
-  return {
-    valid_category_id: categoriesId[shortName],
-    species_hash: hash,
-  };
-};
+const findBy = (filter = {}, { transaction } = {}) => atie(knex(tableName).select().where(filter), transaction);
 
-const find = (id, hash) => knex(table).select().where({ 'valid_category_id': id, 'species_hash': hash }).first();
+const findFirstBy = (filter = {}, options) => findBy(filter, options).first();
 
-const insert = validCategory => knex(table).insert(validCategory).returning('id');
+const insert = (validCategory, { transaction } = {}) => atie(knex(tableName).insert(validCategory).returning('id'), transaction);
 
-const tryToInsert = validCategory => {
+const tryToInsert = async (validCategory, { transaction } = {}) => {
   validCategory.valid_category_id = validCategory.valid_category_id || categoriesId.otro; // clasificar como otro por defecto
-  return find(validCategory.valid_category_id, validCategory.species_hash)
-    .then(dbSpecies => {
-      if (!dbSpecies) {
-        return insert(validCategory);
-      }
-    });
+
+  const dbSpecies = await findFirstBy(validCategory, { transaction });
+  if (!dbSpecies) {
+    return insert(validCategory, { transaction });
+  }
 };
 
-const removeAll = () => knex(table).del();
+const removeAll = ({ transaction } = {}) => atie(knex(tableName).del(), transaction);
+
 
 module.exports = {
   getInstance,
-  find,
   insert,
   tryToInsert,
   removeAll,

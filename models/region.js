@@ -1,7 +1,9 @@
-// maneja las inserciones a la tabla species_region
 const rfr = require('rfr');
 const knex = rfr('/lib/db/knex');
-const table = 'species_region';
+const atie = rfr('/lib/db/addTransactionIfExists');
+
+
+const tableName = 'species_region';
 
 const regionsId = {
   'Arica y Parinacota': 1,
@@ -26,24 +28,15 @@ const regionsId = {
   'Desventuradas': 20,
 };
 
+const getInstance = ({ regionName, value, speciesHash }) => ({ region_id: regionsId[regionName], species_hash: speciesHash, value });
 
-const getInstance = (regionName, value, speciesHash) => {
-  return {
-    region_id: regionsId[regionName],
-    species_hash: speciesHash,
-    value: value,
-  };
-};
+const insert = (validCategory, { transaction } = {}) => atie(knex(tableName).insert(validCategory).returning('id'), transaction);
 
-const find = (id, hash) => knex(table).select().where({ 'region_id': id, 'species_hash': hash }).first();
+const removeAll = ({ transaction } = {}) => atie(knex(tableName).del(), transaction);
 
-const insert = validCategory => knex(table).insert(validCategory).returning('id');
-
-const removeAll = () => knex(table).del();
 
 module.exports = {
   getInstance,
-  find,
   insert,
   removeAll,
 };
