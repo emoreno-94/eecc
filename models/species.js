@@ -1,10 +1,7 @@
-'use strict';
-
 const rfr = require('rfr');
 const hasha = require('hasha');
 const omit = require('lodash.omit');
 const jsondiffpatch = require('jsondiffpatch');
-const table = 'species';
 
 const knex = rfr('/lib/db/knex');
 const atie = rfr('/lib/db/addTransactionIfExists');
@@ -38,7 +35,8 @@ const getByHash = (hash, { transaction } = {}) => findBy({ hash }, { transaction
 
 const insert = (species, { transaction } = {}) => atie(knex(tableName).insert(species).returning('hash'), transaction);
 
-const update = ({ filter = {}, to = {}}, { transaction } = {}) => atie(knex(tableName).where(filter).update(to).returning('hash'), transaction);
+const update = ({ filter = {}, to = {} }, { transaction } = {}) =>
+  atie(knex(tableName).where(filter).update(to).returning('hash'), transaction);
 
 const upsert = async (species, { transaction } = {}) => {
   species.last_date_found = new Date().toISOString();

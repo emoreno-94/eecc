@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint max-len: ["error", { "ignoreStrings": true }] */
 
 const speciesFormat = {

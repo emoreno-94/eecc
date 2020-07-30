@@ -1,5 +1,3 @@
-'use strict';
-
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const retry = require('bluebird-retry');
@@ -57,13 +55,13 @@ const parseXlsx = () => {
   const insertCategories = (categories, speciesHash) => bPromise.map(
     categories,
     (c) => validCategoryModel.tryToInsert(validCategoryModel.getInstance(c, speciesHash)),
-    { concurrency: 1 }
+    { concurrency: 1 },
   );
 
   const insertRegions = (regions, speciesHash) => bPromise.map(
     regions,
     (r) => regionModel.insert(regionModel.getInstance(r.name, r.val, speciesHash)),
-    { concurrency: 5 }
+    { concurrency: 5 },
   );
 
   const saveSpecies = speciesJson => {
@@ -88,7 +86,7 @@ const parseXlsx = () => {
       console.log('Updating species...');
       return validCategoryModel.removeAll()
         .then(() => regionModel.removeAll())
-        .then(() => speciesModel.update({ to: { state: 'lost' }}))
+        .then(() => speciesModel.update({ to: { state: 'lost' } }))
         .then(() => bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 }));
     })
     .then(() => {

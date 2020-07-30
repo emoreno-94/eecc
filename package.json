@@ -43,5 +43,10 @@
     "rfr": "^1.2.3",
     "url-join": "git+https://github.com/fernandocanizo/url-join.git",
     "xlsx": "^0.16.4"
+  },
+  "devDependencies": {
+    "@csw/eslint-config-base": "^1.3.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.5.0"
   }
 }

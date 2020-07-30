@@ -1,5 +1,3 @@
-'use strict';
-
 // maneja las inserciones a la tabla species_region
 const rfr = require('rfr');
 const knex = rfr('/lib/db/knex');

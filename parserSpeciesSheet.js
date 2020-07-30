@@ -1,5 +1,3 @@
-'use strict';
-
 const rfr = require('rfr');
 const formatExcel = rfr('/formatExcel');
 
