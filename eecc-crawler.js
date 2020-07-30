@@ -35,18 +35,22 @@ const getXlsx = async () => {
   return xlsx.read(xlsxSpecies);
 };
 
-const _insertCategories = (categories, speciesHash) =>
-  asyncForEach(categories, c => ValidCategory.tryToInsert(ValidCategory.getInstance({ shortName: c, speciesHash })));
-
-const _insertRegions = (regions, speciesHash) =>
-  asyncForEach(regions, r => Region.insert(Region.getInstance({ regionName: r.name, value: r.val, speciesHash })));
-
-const saveSpecies = async speciesJson => {
+const saveSpecies = async (speciesJson, transaction) => {
   const species = Species.getInstance(speciesJson.species);
   if (! fix.mustBeRemoved(species.scientific_name)) {
-    const [ speciesHash ] = await Species.upsert(species);
-    await _insertCategories(speciesJson.categories, speciesHash);
-    await _insertRegions(speciesJson.regions, speciesHash);
+    const [ speciesHash ] = await Species.upsert(species, { transaction });
+
+    // insertar categorías
+    await asyncForEach(
+      speciesJson.categories,
+      c => ValidCategory.tryToInsert(ValidCategory.getInstance({ shortName: c, speciesHash }), { transaction }),
+    );
+
+    // insertar regiones
+    await asyncForEach(
+      speciesJson.regions,
+      r => Region.insert(Region.getInstance({ regionName: r.name, value: r.val, speciesHash }), { transaction }),
+    );
   }
 };
 
@@ -60,13 +64,15 @@ const run = async () => {
   const allSpeciesJson = parserSpeciesSheet(speciesSheet);
 
   console.log('Actualizando especies...');
-  await ValidCategory.removeAll();
-  await Region.removeAll();
-  await Species.update({ to: { state: 'lost' } });
-  await asyncForEach(allSpeciesJson, saveSpecies);
+  await Species.knex.transaction(async transaction => {
+    await ValidCategory.removeAll({ transaction });
+    await Region.removeAll({ transaction });
+    await Species.update({ to: { state: 'lost' } }, { transaction });
+    await asyncForEach(allSpeciesJson, s => saveSpecies(s, transaction));
 
-  console.log('Corrigiendo especies...');
-  await cswCorrections.runCorrections();
+    console.log('Corrigiendo especies...');
+    await cswCorrections.runCorrections(transaction);
+  });
 
   console.log('Proceso terminado:', new Date().toISOString());
 };

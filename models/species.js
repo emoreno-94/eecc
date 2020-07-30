@@ -66,6 +66,7 @@ const calculateCollectorHash = species => {
 };
 
 module.exports = {
+  knex,
   getInstance,
   getByHash,
   insert,
