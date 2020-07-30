@@ -39,19 +39,20 @@ const getPageToProcessWithRetry = (url, options = { load: true }) => {
     });
 };
 
-const getSpeciesXlsxUrl = () => {
+const getSpeciesXlsxUrl = async () => {
   const urlSelector = 'div#container > ul > li:nth-child(2) > a';
-  return getPageToProcessWithRetry(URL_TO_PROCCESS)
-    .then($ => urlJoin(MAIN_URL, $(urlSelector).attr('href')));
+
+  const $ = await getPageToProcessWithRetry(URL_TO_PROCCESS);
+  return urlJoin(MAIN_URL, $(urlSelector).attr('href'));
 };
 
-const getXlsx = () => {
-  return getSpeciesXlsxUrl()
-    .then(url => getPageToProcessWithRetry(url, { load: false }))
-    .then(xlsxSpecies => xlsx.read(xlsxSpecies));
+const getXlsx = async () => {
+  const url = await getSpeciesXlsxUrl();
+  const xlsxSpecies = await getPageToProcessWithRetry(url, { load: false });
+  return xlsx.read(xlsxSpecies);
 };
 
-const parseXlsx = () => {
+const parseXlsx = async () => {
   const insertCategories = (categories, speciesHash) => bPromise.map(
     categories,
     c => validCategoryModel.tryToInsert(validCategoryModel.getInstance({ shortName: c, speciesHash })),
@@ -64,42 +65,39 @@ const parseXlsx = () => {
     { concurrency: 5 },
   );
 
-  const saveSpecies = speciesJson => {
+  const saveSpecies = async speciesJson => {
     const species = speciesModel.getInstance(speciesJson.species);
     if (! fix.mustBeRemoved(species.scientist_name)) {
-      return speciesModel.upsert(species)
-        .then(speciesHash => {
-          return insertCategories(speciesJson.categories, speciesHash[0])
-            .then(() => insertRegions(speciesJson.regions, speciesHash[0]));
-        });
+      const [ speciesHash ] = await speciesModel.upsert(species);
+      await insertCategories(speciesJson.categories, speciesHash);
+      await insertRegions(speciesJson.regions, speciesHash);
     }
   };
 
   console.log(`${ new Date().toISOString()}: Starting eecc crawler`);
-  return getXlsx()
-    .then(xlsxToParse => {
-      const speciesSheetName = xlsxToParse.SheetNames[1];
-      const speciesSheet = xlsxToParse.Sheets[speciesSheetName];
-      return parserSpeciesSheet(speciesSheet);
-    })
-    .then(allSpeciesJson => {
-      console.log('Updating species...');
-      return validCategoryModel.removeAll()
-        .then(() => regionModel.removeAll())
-        .then(() => speciesModel.update({ to: { state: 'lost' } }))
-        .then(() => bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 }));
-    })
-    .then(() => {
-      return cswCorrections.runCorrections();
-    })
-    .then(() => {
-      console.log(`${ new Date().toISOString()}: Done!`);
-      process.exit(0);
-    })
-    .catch((err) => {
-      console.log(err);
-      process.exit(1);
-    });
+  const xlsxToParse = await getXlsx();
+  const speciesSheetName = xlsxToParse.SheetNames[1];
+  const speciesSheet = xlsxToParse.Sheets[speciesSheetName];
+  const allSpeciesJson = parserSpeciesSheet(speciesSheet);
+
+  console.log('Updating species...');
+  await validCategoryModel.removeAll();
+  await regionModel.removeAll();
+  await speciesModel.update({ to: { state: 'lost' } });
+  await bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 });
+
+  await cswCorrections.runCorrections();
+
+  console.log(`${ new Date().toISOString()}: Done!`);
 };
 
-return parseXlsx();
+
+(async () => {
+  try {
+    await parseXlsx();
+    process.exit(0);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+})();
