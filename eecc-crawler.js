@@ -69,7 +69,7 @@ const parseXlsx = () => {
   const saveSpecies = speciesJson => {
     const species = speciesModel.getInstance(speciesJson.species);
     if (! fix.mustBeRemoved(species.scientist_name)) {
-      return speciesModel.insertOrUpdate(species)
+      return speciesModel.upsert(species)
         .then(speciesHash => {
           return insertCategories(speciesJson.categories, speciesHash[0])
             .then(() => insertRegions(speciesJson.regions, speciesHash[0]));
@@ -88,7 +88,7 @@ const parseXlsx = () => {
       console.log('Updating species...');
       return validCategoryModel.removeAll()
         .then(() => regionModel.removeAll())
-        .then(() => speciesModel.setAllStates('not-found'))
+        .then(() => speciesModel.update({ to: { state: 'lost' }}))
         .then(() => bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 }));
     })
     .then(() => {
