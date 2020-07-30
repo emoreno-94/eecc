@@ -1,6 +1,5 @@
-const rp = require('request-promise');
 const cheerio = require('cheerio');
-const retry = require('bluebird-retry');
+const got = require('got');
 const urlJoin = require('url-join');
 const xlsx = require('xlsx');
 const rfr = require('rfr');
@@ -13,42 +12,20 @@ const fix = rfr('/lib/fix');
 const cswCorrections = rfr('/lib/csw-corrections');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
-const URL_TO_PROCCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
+const URL_TO_PROCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
 
-
-const getPageToProcess = (url, options = { load: true }) => {
-  let RequestOptions = {
-    uri: url,
-    timeout: 5000,
-    resolveWithFullResponse: true,
-    encoding: null,
-    transform: function (body) {
-      return options.load ? cheerio.load(body) : body;
-    },
-  };
-
-  console.log(`Processing page: ${ url }`);
-  return rp(RequestOptions);
-};
-
-const getPageToProcessWithRetry = (url, options = { load: true }) => {
-  return retry(() => getPageToProcess(url, options), { max_tries: 1 })
-    .catch(err => {
-      console.error(`Fail to process url: ${ url }`);
-      return Promise.reject(err);
-    });
-};
 
 const getSpeciesXlsxUrl = async () => {
   const urlSelector = 'div#container > ul > li:nth-child(2) > a';
 
-  const $ = await getPageToProcessWithRetry(URL_TO_PROCCESS);
+  const { body: page } = await got(URL_TO_PROCESS);
+  const $ = cheerio.load(page);
   return urlJoin(MAIN_URL, $(urlSelector).attr('href'));
 };
 
 const getXlsx = async () => {
   const url = await getSpeciesXlsxUrl();
-  const xlsxSpecies = await getPageToProcessWithRetry(url, { load: false });
+  const { body: xlsxSpecies } = await got(url, { responseType: 'buffer' });
   return xlsx.read(xlsxSpecies);
 };
 
