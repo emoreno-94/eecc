@@ -4,11 +4,12 @@ const urlJoin = require('url-join');
 const xlsx = require('xlsx');
 const rfr = require('rfr');
 const parserSpeciesSheet = rfr('/parserSpeciesSheet');
-const speciesModel = rfr('/models/species');
-const validCategoryModel = rfr('/models/validCategory');
-const regionModel = rfr('/models/region');
 const fix = rfr('/lib/fix');
 const cswCorrections = rfr('/lib/csw-corrections');
+
+const Species = rfr('/models/species');
+const ValidCategory = rfr('/models/validCategory');
+const Region = rfr('/models/region');
 
 const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
 const URL_TO_PROCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
@@ -34,45 +35,46 @@ const getXlsx = async () => {
   return xlsx.read(xlsxSpecies);
 };
 
-const parseXlsx = async () => {
-  const insertCategories = (categories, speciesHash) =>
-    asyncForEach(categories, c => validCategoryModel.tryToInsert(validCategoryModel.getInstance({ shortName: c, speciesHash })));
+const _insertCategories = (categories, speciesHash) =>
+  asyncForEach(categories, c => ValidCategory.tryToInsert(ValidCategory.getInstance({ shortName: c, speciesHash })));
 
-  const insertRegions = (regions, speciesHash) =>
-    asyncForEach(regions, r => regionModel.insert(regionModel.getInstance({ regionName: r.name, value: r.val, speciesHash })));
+const _insertRegions = (regions, speciesHash) =>
+  asyncForEach(regions, r => Region.insert(Region.getInstance({ regionName: r.name, value: r.val, speciesHash })));
 
-  const saveSpecies = async speciesJson => {
-    const species = speciesModel.getInstance(speciesJson.species);
-    if (! fix.mustBeRemoved(species.scientific_name)) {
-      const [ speciesHash ] = await speciesModel.upsert(species);
-      await insertCategories(speciesJson.categories, speciesHash);
-      await insertRegions(speciesJson.regions, speciesHash);
-    }
-  };
+const saveSpecies = async speciesJson => {
+  const species = Species.getInstance(speciesJson.species);
+  if (! fix.mustBeRemoved(species.scientific_name)) {
+    const [ speciesHash ] = await Species.upsert(species);
+    await _insertCategories(speciesJson.categories, speciesHash);
+    await _insertRegions(speciesJson.regions, speciesHash);
+  }
+};
 
-  console.log(`${ new Date().toISOString()}: Starting eecc crawler`);
+const run = async () => {
+  console.log('Iniciando extracción de datos:', new Date().toISOString());
+
+  console.log('Procesando excel...', new Date().toISOString());
   const xlsxToParse = await getXlsx();
   const speciesSheetName = xlsxToParse.SheetNames[1];
   const speciesSheet = xlsxToParse.Sheets[speciesSheetName];
   const allSpeciesJson = parserSpeciesSheet(speciesSheet);
 
-  console.log('Updating species...');
-  await validCategoryModel.removeAll();
-  await regionModel.removeAll();
-  await speciesModel.update({ to: { state: 'lost' } });
-  for await (const species of allSpeciesJson) {
-    await saveSpecies(species);
-  }
+  console.log('Actualizando especies...');
+  await ValidCategory.removeAll();
+  await Region.removeAll();
+  await Species.update({ to: { state: 'lost' } });
+  await asyncForEach(allSpeciesJson, saveSpecies);
 
+  console.log('Corrigiendo especies...');
   await cswCorrections.runCorrections();
 
-  console.log(`${ new Date().toISOString()}: Done!`);
+  console.log('Proceso terminado:', new Date().toISOString());
 };
 
 
 (async () => {
   try {
-    await parseXlsx();
+    await run();
     process.exit(0);
   } catch (e) {
     console.error(e);

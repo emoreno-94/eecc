@@ -1,8 +1,8 @@
 const rfr = require('rfr');
 const formatExcel = rfr('/formatExcel');
 
-const sameColumnsInFormat = (xlsx) => {
-  return Object.keys(formatExcel)
+const sameColumnsInFormat = xlsx =>
+  Object.keys(formatExcel)
     .every(formatModel =>
       Object.keys(formatExcel[formatModel])
         .every(colLetter => {
@@ -16,7 +16,6 @@ const sameColumnsInFormat = (xlsx) => {
           }
           return cleanXlsxHeader.includes(cleanFormat.substr(0, 8));
         }));
-};
 
 const getSpecies = (speciesSheet, row) => {
   const species = {};
@@ -26,25 +25,23 @@ const getSpecies = (speciesSheet, row) => {
   return species.scientific_name !== '' ? species : null;
 };
 
-const getRegions = (speciesSheet, row) => {
-  return Object.keys(formatExcel.regionsFormat)
+const getRegions = (speciesSheet, row) =>
+  Object.keys(formatExcel.regionsFormat)
     .filter(col => speciesSheet[`${col}${row}`].v !== 0)
     .map(col => ({ name: formatExcel.regionsFormat[col].xlsx, val: speciesSheet[`${col}${row}`].v }));
-};
 
 const getValidCategories = (speciesSheet, row) => {
   const regRemoveExtra = /\(.*?\)|{.*?}|\[.*?]/g;
-  const cleanCategories = textCategories => {
-    let categories = textCategories.replace(regRemoveExtra, '').split(/[,;\n-]/);
-    categories = categories.map(c => c.trim());
-    categories = categories.filter(c => c !== '');
-    return categories;
-  };
+  const cleanCategories = textCategories => textCategories
+    .replace(regRemoveExtra, '')
+    .split(/[,;\n-]/)
+    .map(c => c.trim())
+    .filter(c => c !== '');
 
   let categories = [];
   Object.keys(formatExcel.validCategoryFormat).forEach(col => {
     const textCategories = speciesSheet[`${col}${row}`].v;
-    categories = cleanCategories(textCategories);
+    categories = [ ...categories, ...cleanCategories(textCategories) ];
   });
   return categories;
 };
@@ -63,11 +60,11 @@ const parseInfo = speciesSheet => {
   return species;
 };
 
-const parseXlsx = (speciesSheet) => {
+const parseXlsx = speciesSheet => {
   if (sameColumnsInFormat(speciesSheet)) {
     return parseInfo(speciesSheet);
   } else {
-    console.error('Excel have a change in headers!!!');
+    throw new Error('Excel have a change in headers!!!');
   }
 };
 
