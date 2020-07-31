@@ -14,9 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate:rollback": "knex migrate:rollback --cwd lib/db/",
     "db:migrate:latest": "knex migrate:latest --cwd lib/db/",
-    "db:migrate:make": "knex migrate:make --cwd lib/db/",
-    "db:seed:make": "knex seed:make --cwd lib/db/",
-    "db:seed:run": "knex seed:run --cwd lib/db/"
+    "db:migrate:make": "knex migrate:make --cwd lib/db/"
   },
   "repository": {
     "type": "git",
