@@ -8,18 +8,14 @@ const atie = rfr('/lib/db/addTransactionIfExists');
 const fix = rfr('/lib/fix');
 
 const tableName = 'species';
-const speciesNameFixers = [
-  fix.badNames,
-  fix.removeVariety,
-  fix.removeParenthesis,
-];
+
 
 const _calculateHash = species => hasha([ species.scientific_name, species.family ].join('&'));
 
 const getInstance = jsonSpecies => {
   const species = jsonSpecies;
   species.process_number_rce = String(jsonSpecies.process_number_rce);
-  species.scientific_name = speciesNameFixers.reduce((result, f) => result = f(result), species.scientific_name.toLowerCase().trim());
+  species.scientific_name = species.scientific_name.replace(/\s+/g, ' ').toLowerCase().trim();
   species.family = (species.family || '').toLowerCase().trim();
   species.hash = _calculateHash(species);
   species.collector_hash = calculateCollectorHash(species);

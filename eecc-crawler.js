@@ -4,7 +4,6 @@ const xlsx = require('xlsx');
 const rfr = require('rfr');
 const parserSpeciesSheet = rfr('/parserSpeciesSheet');
 const fix = rfr('/lib/fix');
-const cswCorrections = rfr('/lib/csw-corrections');
 
 const Species = rfr('/models/species');
 const ValidCategory = rfr('/models/validCategory');
@@ -68,9 +67,6 @@ const run = async () => {
     await Region.removeAll({ transaction });
     await Species.update({ to: { state: 'lost' } }, { transaction });
     await asyncForEach(allSpeciesJson, s => saveSpecies(s, transaction));
-
-    console.log('Corrigiendo especies...');
-    await cswCorrections.runCorrections(transaction);
   });
 
   console.log('Proceso terminado:', new Date().toISOString());
