@@ -1,107 +1,84 @@
-'use strict';
-
-const rp = require('request-promise');
 const cheerio = require('cheerio');
-const retry = require('bluebird-retry');
-const urlJoin = require('url-join');
+const got = require('got');
 const xlsx = require('xlsx');
 const rfr = require('rfr');
 const parserSpeciesSheet = rfr('/parserSpeciesSheet');
-const speciesModel = rfr('/models/species');
-const validCategoryModel = rfr('/models/validCategory');
-const regionModel = rfr('/models/region');
-const bPromise = require('bluebird');
 const fix = rfr('/lib/fix');
-const cswCorrections = rfr('/lib/csw-corrections');
 
-const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
-const URL_TO_PROCCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
+const Species = rfr('/models/species');
+const ValidCategory = rfr('/models/validCategory');
+const Region = rfr('/models/region');
+
+const MAIN_URL = 'https://clasificacionespecies.mma.gob.cl/';
 
 
-const getPageToProcess = (url, options = { load: true }) => {
-  let RequestOptions = {
-    uri: url,
-    timeout: 5000,
-    resolveWithFullResponse: true,
-    encoding: null,
-    transform: function (body) {
-      return options.load ? cheerio.load(body) : body;
-    },
-  };
-
-  console.log(`Processing page: ${ url }`);
-  return rp(RequestOptions);
+const asyncForEach = async (list, fn) => {
+  for await (const e of list) {
+    await fn(e);
+  }
 };
 
-const getPageToProcessWithRetry = (url, options = { load: true }) => {
-  return retry(() => getPageToProcess(url, options), { max_tries: 1 })
-    .catch(err => {
-      console.error(`Fail to process url: ${ url }`);
-      return Promise.reject(err);
-    });
+const getSpeciesXlsxUrl = async () => {
+  const urlSelector = 'div.box-green a';
+
+  const { body: page } = await got(MAIN_URL);
+  const $ = cheerio.load(page);
+  return $(urlSelector).attr('href');
 };
 
-const getSpeciesXlsxUrl = () => {
-  const urlSelector = 'div#container > ul > li:nth-child(2) > a';
-  return getPageToProcessWithRetry(URL_TO_PROCCESS)
-    .then($ => urlJoin(MAIN_URL, $(urlSelector).attr('href')));
+const getXlsx = async () => {
+  const url = await getSpeciesXlsxUrl();
+  const { body: xlsxSpecies } = await got(url, { responseType: 'buffer' });
+  return xlsx.read(xlsxSpecies);
 };
 
-const getXlsx = () => {
-  return getSpeciesXlsxUrl()
-    .then(url => getPageToProcessWithRetry(url, { load: false }))
-    .then(xlsxSpecies => xlsx.read(xlsxSpecies));
-};
+const saveSpecies = async (speciesJson, transaction) => {
+  const species = Species.getInstance(speciesJson.species);
+  if (fix.mustBeRemoved(species.scientific_name) || fix.isInvalidSpecies(species.scientific_name)) {
+    return console.log(`Se ignorá la especie: "${species.scientific_name}"`);
+  }
 
-const parseXlsx = () => {
-  const insertCategories = (categories, speciesHash) => bPromise.map(
-    categories,
-    (c) => validCategoryModel.tryToInsert(validCategoryModel.getInstance(c, speciesHash)),
-    { concurrency: 1 }
+  const [ speciesHash ] = await Species.upsert(species, { transaction });
+  // insertar categorías
+  await asyncForEach(
+    speciesJson.categories,
+    c => ValidCategory.tryToInsert(ValidCategory.getInstance({ shortName: c, speciesHash }), { transaction }),
   );
 
-  const insertRegions = (regions, speciesHash) => bPromise.map(
-    regions,
-    (r) => regionModel.insert(regionModel.getInstance(r.name, r.val, speciesHash)),
-    { concurrency: 5 }
+  // insertar regiones
+  await asyncForEach(
+    speciesJson.regions,
+    r => Region.insert(Region.getInstance({ regionName: r.name, value: r.val, speciesHash }), { transaction }),
   );
-
-  const saveSpecies = speciesJson => {
-    const species = speciesModel.getInstance(speciesJson.species);
-    if (! fix.mustBeRemoved(species.scientist_name)) {
-      return speciesModel.insertOrUpdate(species)
-        .then(speciesHash => {
-          return insertCategories(speciesJson.categories, speciesHash[0])
-            .then(() => insertRegions(speciesJson.regions, speciesHash[0]));
-        });
-    }
-  };
-
-  console.log(`${ new Date().toISOString()}: Starting eecc crawler`);
-  return getXlsx()
-    .then(xlsxToParse => {
-      const speciesSheetName = xlsxToParse.SheetNames[1];
-      const speciesSheet = xlsxToParse.Sheets[speciesSheetName];
-      return parserSpeciesSheet(speciesSheet);
-    })
-    .then(allSpeciesJson => {
-      console.log('Updating species...');
-      return validCategoryModel.removeAll()
-        .then(() => regionModel.removeAll())
-        .then(() => speciesModel.setAllStates('not-found'))
-        .then(() => bPromise.map(allSpeciesJson, saveSpecies, { concurrency: 3 }));
-    })
-    .then(() => {
-      return cswCorrections.runCorrections();
-    })
-    .then(() => {
-      console.log(`${ new Date().toISOString()}: Done!`);
-      process.exit(0);
-    })
-    .catch((err) => {
-      console.log(err);
-      process.exit(1);
-    });
 };
 
-return parseXlsx();
+const run = async () => {
+  console.log('Iniciando extracción de datos:', new Date().toISOString());
+
+  console.log('Procesando excel...', new Date().toISOString());
+  const xlsxToParse = await getXlsx();
+  const speciesSheetName = xlsxToParse.SheetNames[1];
+  const speciesSheet = xlsxToParse.Sheets[speciesSheetName];
+  const allSpeciesJson = parserSpeciesSheet(speciesSheet);
+
+  console.log('Actualizando especies...');
+  await Species.knex.transaction(async transaction => {
+    await ValidCategory.removeAll({ transaction });
+    await Region.removeAll({ transaction });
+    await Species.update({ to: { state: 'lost' } }, { transaction });
+    await asyncForEach(allSpeciesJson, s => saveSpecies(s, transaction));
+  });
+
+  console.log('Proceso terminado:', new Date().toISOString());
+};
+
+
+(async () => {
+  try {
+    await run();
+    process.exit(0);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+})();

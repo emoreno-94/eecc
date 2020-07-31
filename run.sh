@@ -6,7 +6,8 @@ export NVM_DIR="$HOME/.nvm"
 
 # directorio donde se encuentra este script
 curdir=`dirname "$0"`
-
 cd $curdir
 
-node eecc-crawler > "eecc.log" 2>&1
+nvm use `cat .nvmrc` # load node in .nvmrc
+
+npm start > "eecc.log" 2>&1
