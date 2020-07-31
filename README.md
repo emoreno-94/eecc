@@ -4,25 +4,21 @@
 
 [![DeepScan grade](https://deepscan.io/api/projects/2448/branches/15546/badge/grade.svg)](https://deepscan.io/dashboard#view=project&pid=2448&bid=15546)
 
-Descarga el listado de especies en categoría de conservación de la pagina
-http://www.mma.gob.cl/clasificacionespecies/listado-especies-nativas-segun-estado-2014.htm
+Descarga el listado de especies en categoría de conservación de la pagina https://clasificacionespecies.mma.gob.cl/
 y lo guarda en una base de datos
 
 ## Instrucciones
 
-1. Crear archivo `config/local.js` con base `confif/example.local.js`
+1. Crear archivo `config/local.js` con base `config/example.local.js`
 
-2. `npm install` # instalacion de dependencias
+2. `npm install`
 
-3. `npm run db:migrate:latest` # migración inicial
+3. `npm run db:migrate:latest`
 
-4. `npm run db:seed:run` # insertar datos iniciales
+4. Dependiendo de lo que se quiera hacer **hay 2 opciones** de ejecución:
 
-5. Dependiendo de lo que se quiera hacer **hay 2 opciones** de ejecución:
-    
-    - `npm start` # para solo ejecutar el crawler
+    - `npm start` para solo ejecutar el crawler
 
-    - Editar el archivo `example.cron.sh` y luego instalar 
+    - Editar el archivo `example.cron.sh` y luego instalar
       para que el crawler quede andando dependiendo de la programación dada.
       Notar que los logs quedarán en el archivo `eecc.log`
-
