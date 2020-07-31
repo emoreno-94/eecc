@@ -8,13 +8,16 @@ const sameColumnsInFormat = xlsx =>
         .every(colLetter => {
           const cleanXlsxHeader = xlsx[`${colLetter}1`].v.replace(/\s+/g, ' ').trim();
           const cleanFormat = formatExcel[formatModel][colLetter].xlsx.replace(/\s+/g, ' ').trim();
-          if (cleanFormat !== cleanXlsxHeader && cleanXlsxHeader.includes(cleanFormat.substr(0, 8))) {
+
+          const isFullMatch = cleanFormat === cleanXlsxHeader;
+          const onlyInitialMatch = cleanXlsxHeader.includes(cleanFormat.substr(0, 8));
+          if (!isFullMatch && onlyInitialMatch) {
             console.log('WARNING: Columnas difieren en nombres, pero parten similar');
             console.log('-> ', cleanFormat);
             console.log('-> ', cleanXlsxHeader);
             console.log('-----------------');
           }
-          return cleanXlsxHeader.includes(cleanFormat.substr(0, 8));
+          return onlyInitialMatch;
         }));
 
 const getSpecies = (speciesSheet, row) => {

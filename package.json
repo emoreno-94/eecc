@@ -37,7 +37,6 @@
     "pg": "^8.3.0",
     "request": "^2.88.0",
     "rfr": "^1.2.3",
-    "url-join": "git+https://github.com/fernandocanizo/url-join.git",
     "xlsx": "^0.16.4"
   },
   "devDependencies": {

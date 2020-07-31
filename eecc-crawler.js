@@ -1,6 +1,5 @@
 const cheerio = require('cheerio');
 const got = require('got');
-const urlJoin = require('url-join');
 const xlsx = require('xlsx');
 const rfr = require('rfr');
 const parserSpeciesSheet = rfr('/parserSpeciesSheet');
@@ -11,8 +10,7 @@ const Species = rfr('/models/species');
 const ValidCategory = rfr('/models/validCategory');
 const Region = rfr('/models/region');
 
-const MAIN_URL = 'http://www.mma.gob.cl/clasificacionespecies';
-const URL_TO_PROCESS = urlJoin(MAIN_URL, 'listado-especies-nativas-segun-estado-2014.htm');
+const MAIN_URL = 'https://clasificacionespecies.mma.gob.cl/';
 
 
 const asyncForEach = async (list, fn) => {
@@ -22,11 +20,11 @@ const asyncForEach = async (list, fn) => {
 };
 
 const getSpeciesXlsxUrl = async () => {
-  const urlSelector = 'div#container > ul > li:nth-child(2) > a';
+  const urlSelector = 'div.box-green a';
 
-  const { body: page } = await got(URL_TO_PROCESS);
+  const { body: page } = await got(MAIN_URL);
   const $ = cheerio.load(page);
-  return urlJoin(MAIN_URL, $(urlSelector).attr('href'));
+  return $(urlSelector).attr('href');
 };
 
 const getXlsx = async () => {
@@ -37,21 +35,22 @@ const getXlsx = async () => {
 
 const saveSpecies = async (speciesJson, transaction) => {
   const species = Species.getInstance(speciesJson.species);
-  if (! fix.mustBeRemoved(species.scientific_name)) {
-    const [ speciesHash ] = await Species.upsert(species, { transaction });
-
-    // insertar categorías
-    await asyncForEach(
-      speciesJson.categories,
-      c => ValidCategory.tryToInsert(ValidCategory.getInstance({ shortName: c, speciesHash }), { transaction }),
-    );
-
-    // insertar regiones
-    await asyncForEach(
-      speciesJson.regions,
-      r => Region.insert(Region.getInstance({ regionName: r.name, value: r.val, speciesHash }), { transaction }),
-    );
+  if (fix.mustBeRemoved(species.scientific_name) || fix.isInvalidSpecies(species.scientific_name)) {
+    return console.log(`Se ignorá la especie: "${species.scientific_name}"`);
   }
+
+  const [ speciesHash ] = await Species.upsert(species, { transaction });
+  // insertar categorías
+  await asyncForEach(
+    speciesJson.categories,
+    c => ValidCategory.tryToInsert(ValidCategory.getInstance({ shortName: c, speciesHash }), { transaction }),
+  );
+
+  // insertar regiones
+  await asyncForEach(
+    speciesJson.regions,
+    r => Region.insert(Region.getInstance({ regionName: r.name, value: r.val, speciesHash }), { transaction }),
+  );
 };
 
 const run = async () => {
