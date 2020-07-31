@@ -11,7 +11,7 @@ y lo guarda en una base de datos
 
 1. Crear archivo `config/local.js` con base `config/example.local.js`
 
-2. `npm install`
+2. `npm ci`
 
 3. `npm run db:migrate:latest`
 
