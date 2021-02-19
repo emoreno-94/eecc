@@ -30,7 +30,7 @@ const getSpecies = (speciesSheet, row) => {
 
 const getRegions = (speciesSheet, row) =>
   Object.keys(formatExcel.regionsFormat)
-    .filter(col => speciesSheet[`${col}${row}`].v !== 0)
+    .filter(col => (speciesSheet[`${col}${row}`]?.v || 0) !== 0)
     .map(col => ({ name: formatExcel.regionsFormat[col].xlsx, val: speciesSheet[`${col}${row}`].v }));
 
 const getValidCategories = (speciesSheet, row) => {
