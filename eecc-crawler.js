@@ -40,12 +40,14 @@ const saveSpecies = async (speciesJson, transaction) => {
 
   const [ speciesHash ] = await Species.upsert(species, { transaction });
   // insertar categorías
+  await ValidCategory.delFromSpecies(speciesHash, { transaction });
   await asyncForEach(
     speciesJson.categories,
     c => ValidCategory.tryToInsert(ValidCategory.getInstance({ shortName: c, speciesHash }), { transaction }),
   );
 
   // insertar regiones
+  await Region.delFromSpecies(speciesHash, { transaction });
   await asyncForEach(
     speciesJson.regions,
     r => Region.insert(Region.getInstance({ regionName: r.name, value: r.val, speciesHash }), { transaction }),
@@ -63,8 +65,6 @@ const run = async () => {
 
   console.log('Actualizando especies...');
   await Species.knex.transaction(async transaction => {
-    await ValidCategory.removeAll({ transaction });
-    await Region.removeAll({ transaction });
     await Species.update({ to: { state: 'lost' } }, { transaction });
     await asyncForEach(allSpeciesJson, s => saveSpecies(s, transaction));
   });

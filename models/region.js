@@ -9,11 +9,11 @@ const getInstance = ({ regionName, value, speciesHash }) => ({ region_name: regi
 
 const insert = (validCategory, { transaction } = {}) => atie(knex(tableName).insert(validCategory).returning('id'), transaction);
 
-const removeAll = ({ transaction } = {}) => atie(knex(tableName).del(), transaction);
+const delFromSpecies = (speciesHash, { transaction } = {}) => atie(knex(tableName).del().where({ species_hash: speciesHash }), transaction);
 
 
 module.exports = {
   getInstance,
   insert,
-  removeAll,
+  delFromSpecies,
 };

@@ -23,12 +23,12 @@ const tryToInsert = async (validCategory, { transaction } = {}) => {
   }
 };
 
-const removeAll = ({ transaction } = {}) => atie(knex(tableName).del(), transaction);
+const delFromSpecies = (speciesHash, { transaction } = {}) => atie(knex(tableName).del().where({ species_hash: speciesHash }), transaction);
 
 
 module.exports = {
   getInstance,
   insert,
   tryToInsert,
-  removeAll,
+  delFromSpecies,
 };
