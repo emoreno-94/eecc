@@ -34,8 +34,14 @@ const getXlsx = async () => {
 
 const saveSpecies = async (speciesJson, transaction) => {
   const species = Species.getInstance(speciesJson.species);
-  if (fix.mustBeRemoved(species.scientific_name) || fix.isInvalidSpecies(species.scientific_name)) {
-    return console.log(`Se ignorá la especie: "${species.scientific_name}"`);
+  if (fix.mustBeRemoved(species.scientific_name)) {
+    return console.log(`Se ignorá la especie: "${species.scientific_name}" -> debe ser removida`);
+  }
+  if (fix.isInvalidSpecies(species.scientific_name)) {
+    return console.log(`Se ignorá la especie: "${species.scientific_name}" -> por nombre científico`);
+  }
+  if (fix.isInvalidSpecies(species.distribution)) {
+    return console.log(`Se ignorá la especie: "${species.scientific_name}" -> por distribución`);
   }
 
   const [ speciesHash ] = await Species.upsert(species, { transaction });
