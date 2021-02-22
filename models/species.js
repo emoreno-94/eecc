@@ -37,7 +37,7 @@ const update = ({ filter = {}, to = {} }, { transaction } = {}) =>
 const upsert = async (species, { transaction } = {}) => {
   species.last_date_found = new Date().toISOString();
 
-  const dbSpecies = await getByHash(species.hash);
+  const dbSpecies = await getByHash(species.hash, { transaction });
   if (dbSpecies) {
     species.state = 'same-as-before';
     // subir la version si hay cambios

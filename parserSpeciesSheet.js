@@ -30,7 +30,7 @@ const getSpecies = (speciesSheet, row) => {
 
 const getRegions = (speciesSheet, row) =>
   Object.keys(formatExcel.regionsFormat)
-    .filter(col => speciesSheet[`${col}${row}`].v !== 0)
+    .filter(col => (speciesSheet[`${col}${row}`]?.v || 0) !== 0)
     .map(col => ({ name: formatExcel.regionsFormat[col].xlsx, val: speciesSheet[`${col}${row}`].v }));
 
 const getValidCategories = (speciesSheet, row) => {
@@ -51,7 +51,11 @@ const getValidCategories = (speciesSheet, row) => {
 
 
 const parseInfo = speciesSheet => {
-  const rows = speciesSheet['!rows'].length;
+  const rows = new Set(
+    Object.keys(speciesSheet)
+      .filter(v => v.match(/^[A-Z]+\d+$/)) // filtrar solo valores del excel
+      .map(v => v.replace(/^[A-Z]+(\d+)$/, '$1')), // extraer fila de cada celda
+  ).size;
   const species = [];
   for (let row = 2; row <= rows; row++) {
     species.push({
