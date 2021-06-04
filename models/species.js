@@ -13,15 +13,22 @@ const tableName = 'species';
 const _calculateHash = species => hasha([ species.scientific_name, species.family ].join('&'));
 
 const getInstance = jsonSpecies => {
-  const species = jsonSpecies;
+  const species = { ...jsonSpecies };
   species.process_number_rce = String(jsonSpecies.process_number_rce);
-  species.scientific_name = species.scientific_name.replace(/\s+/g, ' ').toLowerCase().trim();
+  species.scientific_name = species.scientific_name
+    .replace(/\s+/g, ' ')
+    .replace(/ anteriormente llamada.*/, '')
+    .toLowerCase().trim();
   species.family = (species.family || '').toLowerCase().trim();
   species.hash = _calculateHash(species);
   species.collector_hash = calculateCollectorHash(species);
   Object.keys(species).forEach(key => species[key] = (species[key] || '').trim());
   // fix middle newlines in valid_category_text
   species.valid_category_text = fix.validCategoryText(species.valid_category_text);
+
+  if (jsonSpecies.scientific_name.match(/ anteriormente llamada.*/)) {
+    console.log(`Se renombró "${jsonSpecies.scientific_name}" a "${species.scientific_name}"`);
+  }
   return species;
 };
 
