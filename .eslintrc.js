@@ -1,12 +1,11 @@
 module.exports = {
   env: {
     node: true,
-    es6: true,
+    es2022: true,
   },
   extends: [ 'eslint:recommended', '@csw/base' ],
-  parser: 'babel-eslint',
   parserOptions: {
-    ecmaVersion: 2017,
+    ecmaVersion: 2022,
     sourceType: 'module',
   },
 };
