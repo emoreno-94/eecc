@@ -29,7 +29,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "config": "^3.3.7",
-    "got": "^11.8.2",
+    "got": "^11.8.5",
     "hasha": "^5.2.2",
     "jsondiffpatch": "^0.4.1",
     "knex": "^2.2.0",
