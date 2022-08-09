@@ -44,7 +44,7 @@ const saveSpecies = async (speciesJson, transaction) => {
     return console.log(`Se ignorá la especie: "${species.scientific_name}" -> por distribución`);
   }
 
-  const [ speciesHash ] = await Species.upsert(species, { transaction });
+  const [ { hash: speciesHash } ] = await Species.upsert(species, { transaction });
   // insertar categorías
   await ValidCategory.delFromSpecies(speciesHash, { transaction });
   await asyncForEach(
