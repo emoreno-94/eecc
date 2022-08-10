@@ -114,28 +114,28 @@ const speciesFormat = {
     },
   },
   'AM': {
-    xlsx: 'Categoría anterior a RCE actual (no vigente) Bol_47 = Boletín 47 MNHN CAZA = Reglamento Ley de CAZA L_Rojo_Flora = Libro Rojo de flora L_Rojo_Vert = Libro Rojo de vertebrados Núñez et al. 1997 = Reunión de herpetólogos Yáñez et al. 1997 = Reunión especialistas mamíferos acuáticos RCE = Reglamento de Clasificación Especies.',
+    xlsx: 'Categoría ANTERIOR a RCE actual (NO VIGENTE) Bol_47 = Boletín 47 MNHN CAZA = Reglamento Ley de CAZA L_Rojo_Flora = Libro Rojo de flora L_Rojo_Vert = Libro Rojo de vertebrados Núñez et al. 1997 = Reunión de herpetólogos Yáñez et al. 1997 = Reunión especialistas mamíferos acuáticos RCE = Reglamento de Clasificación Especies.',
     db: {
       table: 'species',
       column: 'before_category_to_current_rce_not_valid',
     },
   },
   'AN': {
-    xlsx: 'Fuente Categoría anterior a RCE actual (no vigente)',
+    xlsx: 'Fuente Categoría ANTERIOR a RCE actual (NO VIGENTE) (Ver valores en columna adyacente)',
     db: {
       table: 'species',
       column: 'before_source_category_to_current_rce_not_valid',
     },
   },
   'AO': {
-    xlsx: 'Categoría Ante Anterior a RCE actual (no vigente) Bol_47 = Boletín 47 MNHN CAZA = Reglamento Ley de CAZA L_Rojo_Flora = Libro Rojo de flora L_Rojo_Vert = Libro Rojo de vertebrados Núñez et al. 1997 = Reunión de herpetólogos Yáñez et al. 1997 = Reunión especialistas mamíferos acuáticos RCE = Reglamento de Clasificación Especies.',
+    xlsx: 'Categoría ANTE ANTERIOR a RCE actual (NO VIGENTE) Bol_47 = Boletín 47 MNHN CAZA = Reglamento Ley de CAZA L_Rojo_Flora = Libro Rojo de flora L_Rojo_Vert = Libro Rojo de vertebrados Núñez et al. 1997 = Reunión de herpetólogos Yáñez et al. 1997 = Reunión especialistas mamíferos acuáticos RCE = Reglamento de Clasificación Especies.',
     db: {
       table: 'species',
       column: 'before_before_category_to_current_rce_not_valid',
     },
   },
   'AP': {
-    xlsx: 'Fuente Categoría  Ante Anterior a RCE actual (no vigente)',
+    xlsx: 'Fuente Categoría ANTE ANTERIOR a RCE actual (NO VIGENTE) (Ver valores en columna adyacente)',
     db: {
       table: 'species',
       column: 'before_before_source_category_to_current_rce_not_valid',
