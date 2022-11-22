@@ -17,7 +17,7 @@ const getInstance = jsonSpecies => {
   species.process_number_rce = String(jsonSpecies.process_number_rce);
   species.scientific_name = species.scientific_name
     .replace(/\s+/g, ' ')
-    .replace(/ anteriormente llamada.*/, '')
+    .replace(/ante(riro|rior)mente llamad(o|a).*/, '')
     .toLowerCase().trim();
   species.family = (species.family || '').toLowerCase().trim();
   species.hash = _calculateHash(species);
@@ -26,7 +26,7 @@ const getInstance = jsonSpecies => {
   // fix middle newlines in valid_category_text
   species.valid_category_text = fix.validCategoryText(species.valid_category_text);
 
-  if (jsonSpecies.scientific_name.match(/ anteriormente llamada.*/)) {
+  if (jsonSpecies.scientific_name.match(/ ante(riro|rior)mente llamad(o|a).*/)) {
     console.log(`Se renombró "${jsonSpecies.scientific_name}" a "${species.scientific_name}"`);
   }
   return species;
