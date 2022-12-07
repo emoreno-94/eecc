@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "@csw/eslint-config-base": "^1.4.0",
-    "babel-eslint": "^10.1.0",
     "eslint": "^8.21.0",
     "shared-git-hooks": "^1.2.1"
   }
