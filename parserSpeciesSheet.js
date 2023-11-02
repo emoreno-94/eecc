@@ -11,8 +11,12 @@ const sameColumnsInFormat = xlsx =>
 
           const isFullMatch = cleanFormat === cleanXlsxHeader;
           const onlyInitialMatch = cleanXlsxHeader.includes(cleanFormat.substr(0, 8));
-          if (!isFullMatch && onlyInitialMatch) {
-            console.log('WARNING: Columnas difieren en nombres, pero parten similar');
+          if (!isFullMatch) {
+            if (onlyInitialMatch) {
+              console.warn('WARNING: Columnas difieren en nombres, pero parten similar');
+            } else {
+              console.error('ERROR: Columnas diferentes!');
+            }
             console.log('-> ', cleanFormat);
             console.log('-> ', cleanXlsxHeader);
             console.log('-----------------');
