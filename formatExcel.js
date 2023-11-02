@@ -1,147 +1,147 @@
 /* eslint max-len: ["error", { "ignoreStrings": true }] */
 
 const speciesFormat = {
-  'B': {
+  'A': {
     xlsx: 'NOMBRE CIENTÍFICO',
     db: {
       table: 'species',
       column: 'scientific_name',
     },
   },
-  'C': {
+  'B': {
     xlsx: 'NOMBRE COMÚN',
     db: {
       table: 'species',
       column: 'common_name',
     },
   },
-  'D': {
+  'C': {
     xlsx: 'SINONIMIA incompleta',
     db: {
       table: 'species',
       column: 'incomplete_synonymy',
     },
   },
-  'E': {
+  'D': {
     xlsx: 'REINO',
     db: {
       table: 'species',
       column: 'kingdom',
     },
   },
-  'F': {
+  'E': {
     xlsx: 'PHYLLUM / DIVISIÓN',
     db: {
       table: 'species',
       column: 'division',
     },
   },
-  'G': {
+  'F': {
     xlsx: 'CLASE',
     db: {
       table: 'species',
       column: 'class',
     },
   },
-  'H': {
+  'G': {
     xlsx: 'ORDEN',
     db: {
       table: 'species',
       column: 'order',
     },
   },
-  'I': {
+  'H': {
     xlsx: 'FAMILIA',
     db: {
       table: 'species',
       column: 'family',
     },
   },
-  'J': {
+  'I': {
     xlsx: 'HÁBITO  (sólo plantas)',
     db: {
       table: 'species',
       column: 'inhabit',
     },
   },
-  'K': {
-    xlsx: 'ENDÉMICA respecto de Chile  (? = dudoso)',
+  'J': {
+    xlsx: 'ENDÉMICA respecto de Chile --= No presente en Chile ? = dudoso',
     db: {
       table: 'species',
       column: 'endemic',
     },
   },
-  'L': {
+  'K': {
     xlsx: 'DISTRIBUCIÓN REGIONES: ANT= ANTARTICA DV= DESVENTURADAS IP= ISLA DE PASCUA JF= Arch. JUAN FERNÁNDEZ SG= SALAS Y GOMEZ ? = Sin datos o de presencia dudosa o requiere confirmación',
     db: {
       table: 'species',
       column: 'distribution',
     },
   },
-  'AH': {
+  'AG': {
     xlsx: 'CATEGORÍA VIGENTE: CR = En peligro crítico DD = Datos insuficientes EN = En Peligro EW= Extinta en estado silvestre EX = Extinta FP = Fuera de Peligro IC = Insuficientemente Conocida LC = Preocupación menor NT = Casi amenazada R  = Rara VU = Vulnerable',
     db: {
       table: 'species',
       column: 'valid_category_text',
     },
   },
-  'AI': {
+  'AH': {
     xlsx: 'FUENTE DE CATEGORÍA VIGENTE: CAZA = Reglamento Ley de CAZA RCE = Reglamento de Clasificación Especies.',
     db: {
       table: 'species',
       column: 'source_category',
     },
   },
-  'AJ': {
+  'AI': {
     xlsx: 'Criterio clasificación para especies RCE Vigentes',
     db: {
       table: 'species',
       column: 'classify_rule_for_valid_rce_species',
     },
   },
-  'AK': {
+  'AJ': {
     xlsx: 'NÚMERO PROCESO RCE  se clasificó categoría Vigente',
     db: {
       table: 'species',
       column: 'process_number_rce',
     },
   },
-  'AL': {
+  'AK': {
     xlsx: 'REFERENCIA o DECRETO Categoría Vigente',
     db: {
       table: 'species',
       column: 'reference_or_decree_valid_category',
     },
   },
-  'AM': {
+  'AL': {
     xlsx: 'Categoría ANTERIOR a RCE actual (NO VIGENTE) Bol_47 = Boletín 47 MNHN CAZA = Reglamento Ley de CAZA L_Rojo_Flora = Libro Rojo de flora L_Rojo_Vert = Libro Rojo de vertebrados Núñez et al. 1997 = Reunión de herpetólogos Yáñez et al. 1997 = Reunión especialistas mamíferos acuáticos RCE = Reglamento de Clasificación Especies.',
     db: {
       table: 'species',
       column: 'before_category_to_current_rce_not_valid',
     },
   },
-  'AN': {
+  'AM': {
     xlsx: 'Fuente Categoría ANTERIOR a RCE actual (NO VIGENTE) (Ver valores en columna adyacente)',
     db: {
       table: 'species',
       column: 'before_source_category_to_current_rce_not_valid',
     },
   },
-  'AO': {
+  'AN': {
     xlsx: 'Categoría ANTE ANTERIOR a RCE actual (NO VIGENTE) Bol_47 = Boletín 47 MNHN CAZA = Reglamento Ley de CAZA L_Rojo_Flora = Libro Rojo de flora L_Rojo_Vert = Libro Rojo de vertebrados Núñez et al. 1997 = Reunión de herpetólogos Yáñez et al. 1997 = Reunión especialistas mamíferos acuáticos RCE = Reglamento de Clasificación Especies.',
     db: {
       table: 'species',
       column: 'before_before_category_to_current_rce_not_valid',
     },
   },
-  'AP': {
+  'AO': {
     xlsx: 'Fuente Categoría ANTE ANTERIOR a RCE actual (NO VIGENTE) (Ver valores en columna adyacente)',
     db: {
       table: 'species',
       column: 'before_before_source_category_to_current_rce_not_valid',
     },
   },
-  'AQ': {
+  'AP': {
     xlsx: 'Es vertebrado, INvertebrado, Planta u Hongo',
     db: {
       table: 'species',
@@ -151,147 +151,147 @@ const speciesFormat = {
 };
 
 const regionsFormat = {
-  'M': {
+  'L': {
     xlsx: 'Arica y Parinacota',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'N': {
+  'M': {
     xlsx: 'Tarapacá',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'O': {
+  'N': {
     xlsx: 'Antofagasta',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'P': {
+  'O': {
     xlsx: 'Atacama',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'Q': {
+  'P': {
     xlsx: 'Coquimbo',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'R': {
+  'Q': {
     xlsx: 'Valparaíso continental',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'S': {
+  'R': {
     xlsx: 'Metropolitana',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'T': {
+  'S': {
     xlsx: 'O\'higgins',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'U': {
+  'T': {
     xlsx: 'Maule',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'V': {
+  'U': {
     xlsx: 'Ñuble',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'W': {
+  'V': {
     xlsx: 'Bío-Bío',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'X': {
+  'W': {
     xlsx: 'Araucanía',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'Y': {
+  'X': {
     xlsx: 'De Los Ríos',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'Z': {
+  'Y': {
     xlsx: 'De Los Lagos',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'AA': {
+  'Z': {
     xlsx: 'Aysén',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'AB': {
+  'AA': {
     xlsx: 'Magallanes continental e insular',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'AC': {
+  'AB': {
     xlsx: 'Antártica',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'AD': {
+  'AC': {
     xlsx: 'Isla Pascua',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'AE': {
+  'AD': {
     xlsx: 'Salas y Gómez',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'AF': {
+  'AE': {
     xlsx: 'Juan Fernandez',
     db: {
       table: 'regions',
       column: 'name',
     },
   },
-  'AG': {
+  'AF': {
     xlsx: 'Desventuradas',
     db: {
       table: 'regions',
@@ -301,7 +301,7 @@ const regionsFormat = {
 };
 
 const validCategoryFormat = {
-  'AH': {
+  'AG': {
     xlsx: 'CATEGORÍA VIGENTE: CR = En peligro crítico DD = Datos insuficientes EN = En Peligro EW= Extinta en estado silvestre EX = Extinta FP = Fuera de Peligro IC = Insuficientemente Conocida LC = Preocupación menor NT = Casi amenazada R  = Rara VU = Vulnerable',
     db: {
       table: 'valid_category',
