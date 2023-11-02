@@ -38,11 +38,11 @@ const getRegions = (speciesSheet, row) =>
     .map(col => ({ name: formatExcel.regionsFormat[col].xlsx, val: speciesSheet[`${col}${row}`].v }));
 
 const getValidCategories = (speciesSheet, row) => {
-  const regRemoveExtra = /\(.*?\)|{.*?}|\[.*?]/g;
+  const regRemoveExtra = /\(.*?\)|{.*?}|\[.*?]| de Ñuble al norte| de Biobío al sur/g;
   const cleanCategories = textCategories => textCategories
     .replace(regRemoveExtra, '')
     .split(/[,;\n-]/)
-    .map(c => c.trim())
+    .map(c => c.trim().replace(/^(\w)/, (_, firstLetter) => firstLetter.toUpperCase()))
     .filter(c => c !== '');
 
   let categories = [];
