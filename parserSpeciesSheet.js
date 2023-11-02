@@ -11,8 +11,12 @@ const sameColumnsInFormat = xlsx =>
 
           const isFullMatch = cleanFormat === cleanXlsxHeader;
           const onlyInitialMatch = cleanXlsxHeader.includes(cleanFormat.substr(0, 8));
-          if (!isFullMatch && onlyInitialMatch) {
-            console.log('WARNING: Columnas difieren en nombres, pero parten similar');
+          if (!isFullMatch) {
+            if (onlyInitialMatch) {
+              console.warn('WARNING: Columnas difieren en nombres, pero parten similar');
+            } else {
+              console.error('ERROR: Columnas diferentes!');
+            }
             console.log('-> ', cleanFormat);
             console.log('-> ', cleanXlsxHeader);
             console.log('-----------------');
@@ -34,11 +38,11 @@ const getRegions = (speciesSheet, row) =>
     .map(col => ({ name: formatExcel.regionsFormat[col].xlsx, val: speciesSheet[`${col}${row}`].v }));
 
 const getValidCategories = (speciesSheet, row) => {
-  const regRemoveExtra = /\(.*?\)|{.*?}|\[.*?]/g;
+  const regRemoveExtra = /\(.*?\)|{.*?}|\[.*?]| de Ñuble al norte| de Biobío al sur/g;
   const cleanCategories = textCategories => textCategories
     .replace(regRemoveExtra, '')
     .split(/[,;\n-]/)
-    .map(c => c.trim())
+    .map(c => c.trim().replace(/^(\w)/, (_, firstLetter) => firstLetter.toUpperCase()))
     .filter(c => c !== '');
 
   let categories = [];
