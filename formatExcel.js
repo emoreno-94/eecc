@@ -23,45 +23,45 @@ const speciesFormat = {
     },
   },
   'D': {
+    xlsx: 'HÁBITO  (sólo plantas)',
+    db: {
+      table: 'species',
+      column: 'inhabit',
+    },
+  },
+  'E': {
     xlsx: 'REINO',
     db: {
       table: 'species',
       column: 'kingdom',
     },
   },
-  'E': {
+  'F': {
     xlsx: 'PHYLLUM / DIVISIÓN',
     db: {
       table: 'species',
       column: 'division',
     },
   },
-  'F': {
+  'G': {
     xlsx: 'CLASE',
     db: {
       table: 'species',
       column: 'class',
     },
   },
-  'G': {
+  'H': {
     xlsx: 'ORDEN',
     db: {
       table: 'species',
       column: 'order',
     },
   },
-  'H': {
+  'I': {
     xlsx: 'FAMILIA',
     db: {
       table: 'species',
       column: 'family',
-    },
-  },
-  'I': {
-    xlsx: 'HÁBITO  (sólo plantas)',
-    db: {
-      table: 'species',
-      column: 'inhabit',
     },
   },
   'J': {
