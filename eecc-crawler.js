@@ -9,7 +9,7 @@ const Species = rfr('/models/species');
 const ValidCategory = rfr('/models/validCategory');
 const Region = rfr('/models/region');
 
-const MAIN_URL = 'https://clasificacionespecies.mma.gob.cl/';
+const MAIN_URL = 'https://clasificacionespecies.mma.gob.cl';
 
 
 const asyncForEach = async (list, fn) => {
